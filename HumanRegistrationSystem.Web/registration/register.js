@@ -50,12 +50,10 @@ function registerUser() {
     const name = document.getElementById("username").value;
     const username = name.toLowerCase();
     const password = document.getElementById("password").value;
-    const email = document.getElementById("email").value;  // Retrieve email value
 
     const credentials = {
         userName: username,
         password: password,
-        email: email
     };
 
     // Call the registration API
