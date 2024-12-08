@@ -36,7 +36,16 @@ namespace HumanRegistrationSystem.Controllers
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(AccountRequestDto req)
         {
+            _logger.LogInformation($"Creating account for {req.UserName}");
+
             var account = _mapper.Map(req);
+            
+            if (_accountService.GetAccount(account.UserName) != null)
+            {
+                _logger.LogWarning($"User {req.UserName} already exists");
+                return BadRequest("User already exists");
+            }
+
             var userId = _accountService.CreateAccount(account);
 
             return Created("", new { id = userId });
