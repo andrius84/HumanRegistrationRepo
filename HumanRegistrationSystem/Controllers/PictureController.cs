@@ -3,6 +3,7 @@ using HumanRegistrationSystem.Entities;
 using HumanRegistrationSystem.AdditionalServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HumanRegistrationSystem.Controllers
 {
@@ -43,6 +44,7 @@ namespace HumanRegistrationSystem.Controllers
         //}
 
         [HttpPost("upload")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UploadImage(IFormFile file, Guid personId)
         {
             if (file == null || file.Length == 0)
@@ -72,6 +74,7 @@ namespace HumanRegistrationSystem.Controllers
         }
 
         [HttpGet("picture/{personId}")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetImageByPersonId(Guid personId)
         {
             var thumbnail = await _context.ProfilePictures.FirstOrDefaultAsync(pp => pp.PersonId == personId);

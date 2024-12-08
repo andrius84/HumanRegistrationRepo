@@ -46,9 +46,9 @@ namespace HumanRegistrationSystem.Controllers
                 return BadRequest("User already exists");
             }
 
-            var userId = _accountService.CreateAccount(account);
+            var newUser = _accountService.CreateAccount(account);
 
-            return Created("", new { id = userId });
+            return Created(nameof(SignUp), new { id = newUser.Id });
         }
 
         /// <summary>
@@ -57,51 +57,65 @@ namespace HumanRegistrationSystem.Controllers
         /// <response code="400">Model validation error</response>
         /// <response code="500">System error</response>
         [HttpPost("Login")]
-        [Produces(MediaTypeNames.Text.Plain)]
+        [Produces(MediaTypeNames.Application.Json)]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login(LoginRequestDto req)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto req)
         {
-            _logger.LogInformation($"Login attempt for {req.UserName}");
+            if (req == null || string.IsNullOrWhiteSpace(req.UserName) || string.IsNullOrWhiteSpace(req.Password))
+            {
+                _logger.LogWarning("Invalid login request");
+                return BadRequest("Invalid request. Username and password are required.");
+            }
+
+            _logger.LogInformation($"Login attempt for user: {req.UserName}");
 
             // Retrieve the account by username
             var account = _accountService.GetAccount(req.UserName!);
             if (account == null)
             {
                 _logger.LogWarning($"User {req.UserName} not found");
-                return BadRequest("User not found");
+                return BadRequest("Invalid username or password");
             }
 
             // Verify password
             var isPasswordValid = _accountService.VerifyPasswordHash(req.Password, account.PasswordHash, account.PasswordSalt);
             if (!isPasswordValid)
             {
-                _logger.LogWarning($"Invalid password for {req.UserName}");
+                _logger.LogWarning($"Invalid password for user: {req.UserName}");
                 return BadRequest("Invalid username or password");
             }
 
-            // Log successful login
             _logger.LogInformation($"User {req.UserName} successfully logged in");
 
-            // Generate the JWT token
-            var jwt = _jwtService.GetJwtToken(account);
-
-            // Set the JWT in an HttpOnly cookie with Secure and SameSite options
-            Response.Cookies.Append("jwtToken", jwt, new CookieOptions
+            try
             {
-                HttpOnly = true,   // Prevent access to cookie via JavaScript
-                Secure = true,     // Ensure cookie is only sent over HTTPS
-                SameSite = SameSiteMode.Strict,  // Prevent CSRF attacks
-                Expires = DateTime.UtcNow.AddHours(1)  // Set token expiration time
-            });
+                // Generate the JWT token
+                var jwt = _jwtService.GetJwtToken(account);
 
-            // Return a successful response, without sending the token back in the body
-            return Ok("Login successful");
+                // Set the JWT in an HttpOnly cookie
+                Response.Cookies.Append("jwtToken", jwt, new CookieOptions
+                {
+                    HttpOnly = false, // Prevent JavaScript access
+                    Secure = false,   // Only send over HTTPS
+                    SameSite = SameSiteMode.Strict, // Protect against CSRF
+                    Expires = DateTime.UtcNow.AddHours(1) // Token expiration
+                });
+
+                // Return user ID in the response body
+                return Ok(account.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating JWT for user: {UserName}", req.UserName);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request");
+            }
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Get()
         {
             return Ok("Hello from secure API");

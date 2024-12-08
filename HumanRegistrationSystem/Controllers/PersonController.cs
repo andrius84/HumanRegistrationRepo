@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using HumanRegistrationSystem.Mappers;
 using HumanRegistrationSystem.DTOs.Request;
 using HumanRegistrationSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HumanRegistrationSystem.Controllers
 {
@@ -23,6 +24,7 @@ namespace HumanRegistrationSystem.Controllers
 
         // POST: api/Person
         [HttpPost]
+        //[Authorize(Roles = "User")]
         public async Task<IActionResult> Post([FromBody]PersonRequestDto personRequestDto)
         {
             _logger.LogInformation($"Creating a new Person {personRequestDto.FirstName} {personRequestDto.LastName}");

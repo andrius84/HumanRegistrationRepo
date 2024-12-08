@@ -18,10 +18,10 @@ namespace HumanRegistrationSystem.DTOs.Request
         [PasswordValidator]
         public string? Password { get; set; }
 
-        /// <summary>
-        /// Role of the account
-        /// </summary>
-        [RoleValidator]
-        public string? Role { get; set; }
+        ///// <summary>
+        ///// Role of the account
+        ///// </summary>
+        //[RoleValidator]
+        //public string? RoleId { get; set; }
     }
 }

@@ -1,108 +1,153 @@
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("registerButton").addEventListener("click", GetUser);
-    document.getElementById("backToLogin").addEventListener("click", function() {
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("registerButton").addEventListener("click", registerUser);
+    document.getElementById("backToLogin").addEventListener("click", function () {
         window.location.href = '../index.html';
     });
 });
 
-function showMessage(message) {
-    let messageDiv = document.getElementById("message");
-    if (!messageDiv) {
-        messageDiv = document.createElement("div");
-        messageDiv.id = "message";
-        document.body.appendChild(messageDiv);
+// Function to handle user registration
+async function registerUser() {
+    // Retrieve input values
+    const username = document.getElementById("username").value.toLowerCase();
+    const password1 = document.getElementById("password1").value;
+    const password2 = document.getElementById("password2").value;
+    const messageDiv = document.getElementById("message");
+
+    clearMessage();
+
+    if (password1 !== password2) {
+        showMessage("Slaptažodžiai nesutampa. Bandykite dar kartą.", "error");
+        return;
     }
-    messageDiv.style.display = 'block';
-    messageDiv.style.backgroundColor = 'red';
-    messageDiv.style.color = 'white';
-    messageDiv.style.padding = '5px';
-    messageDiv.style.borderRadius = '5px';
-    messageDiv.style.textAlign = 'center';
-    
-    messageDiv.textContent = message;
-  }
 
-function GetUser(username, password) {
-    const url = `https://localhost:5100/api/Auth?username=${username}&password=${password}`;  
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json' 
-        }
-    })
-    .then(response => {
-      if (response.ok) {
-          return response.json();
-      } else {
-        registerUser();
-      }
-    })
-    .then(data => {
-            console.log('User exist', data);
-            showMessage('Toks vartotojas jau egzistuoja!');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-function registerUser() {
-    const name = document.getElementById("username").value;
-    const username = name.toLowerCase();
-    const password = document.getElementById("password").value;
-
+    // Prepare the payload for registration
     const credentials = {
         userName: username,
-        password: password,
-    };
-
-    // Call the registration API
-    fetch('https://localhost:5100/api/Auth/SignUp', {  // Make sure the endpoint matches your API
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Registration failed with status: ' + response.status);
-        }
-        return response.json(); // Parse the response if successful
-    })
-    .then(data => {
-        console.log('User registered successfully:', data);  // Log the response data (user details or ID)
-        window.location.href = '../toDoApp/toDoApp.html';  // Redirect after successful registration
-    })
-    .catch(error => {
-        console.error('Error:', error);  // Handle any errors
-    });
-}
-//////////////////////////////
-async function registerUser() {
-    const credentials = {
-        userName: "johndoe",
-        password: "SecurePassword123"
+        password: password1
     };
 
     try {
-        const response = await fetch("/api/auth/SignUp", {
-            method: "POST",
+        // Register the user
+        const response = await fetch('https://localhost:5100/api/Account/SignUp', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(credentials)
         });
 
         if (response.status === 201) {
             const result = await response.json();
-            console.log("Registration successful, User ID:", result.id);
-            window.location.href = '../toDoApp/toDoApp.html'
+            console.log("Registration successful, User ID:", result);
+
+            await getToken(username, password1);
+
+        } else {
+            const errorText = await response.text();
+            showMessage(`Registracija nepavyko: ${errorText}`, "error");
+            console.error("Registration failed:", errorText);
+        }
+    } catch (error) {
+        showMessage("Įvyko tinklo klaida. Bandykite dar kartą.", "error");
+        console.error('Error:', error.message || error);
+    }
+}
+
+async function getToken(username, password) {
+    const credentials = {
+        userName: username,
+        password: password
+    };
+
+    try {
+        const response = await fetch('https://localhost:5100/api/Account/Login', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(credentials),
+            credentials: 'include' // Include cookies in the request
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Login successful");
+
+            // Store the user ID in sessionStorage
+            if (data) {
+                sessionStorage.setItem("userId", data);
+                console.log("User ID saved in sessionStorage:", data);
+            } else {
+                console.warn("User ID not found in response.");
+            }
+
+            logTokenAndCookies()
+
+            // Redirect to the next page after successful login
+            //window.location.href = 'person/person.html';
+        } else if (response.status === 404) {
+            showMessage('Vartotojas nerastas, bandykite dar kartą.');
         } else {
             const error = await response.text();
-            console.error("Registration failed:", error);
+            console.error("Login failed:", error);
+            showMessage('Įvyko klaida. Bandykite dar kartą.');
         }
     } catch (error) {
         console.error("Network error:", error);
+        showMessage('Tinklo klaida. Bandykite dar kartą.');
     }
+}
+
+// Utility function to display messages
+function showMessage(message, type = 'error') {
+    const messageDiv = document.getElementById("message");
+    messageDiv.style.display = 'block';
+    messageDiv.style.padding = '10px';
+    messageDiv.style.borderRadius = '5px';
+    messageDiv.style.textAlign = 'center';
+    if (type === 'error') {
+        messageDiv.style.backgroundColor = 'red';
+        messageDiv.style.color = 'white';
+    } else {
+        messageDiv.style.backgroundColor = 'green';
+        messageDiv.style.color = 'white';
+    }
+    messageDiv.textContent = message;
+}
+
+function togglePasswordVisibility(passwordFieldId, toggleButton) {
+    const passwordField = document.getElementById(passwordFieldId);
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleButton.textContent = "🙈"; // Change icon to "hide" mode
+    } else {
+        passwordField.type = "password";
+        toggleButton.textContent = "👁️"; // Change icon to "show" mode
+    }
+}
+
+function clearMessage() {
+    const messageDiv = document.getElementById("message");
+    if (messageDiv) {
+        messageDiv.style.display = 'none';
+        messageDiv.textContent = "";
+    }
+}
+
+
+
+
+
+function logTokenAndCookies() {
+        // Log JWT token stored in cookie (only in development)
+        const jwtToken = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
+        if (jwtToken) {
+            console.log("JWT Token from cookie:", jwtToken.split('=')[1]);
+            sessionStorage.setItem("jwtToken", jwtToken.split('=')[1]);
+        } else {
+            console.log("No JWT Token found in cookie.");
+        }
+        // Log cookies
+        console.log("All cookies:", document.cookie);    
 }

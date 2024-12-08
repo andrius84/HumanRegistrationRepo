@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using HumanRegistrationSystem.Mappers;
 using HumanRegistrationSystem.DTOs.Request;
 using HumanRegistrationSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HumanRegistrationSystem.Controllers
 {
@@ -24,6 +25,7 @@ namespace HumanRegistrationSystem.Controllers
 
         // POST: api/Address
         [HttpPost]
+        //[Authorize(Roles = "User")]
         public async Task<IActionResult> Post([FromBody] AddressRequestDto addressRequestDto)
         {
             _logger.LogInformation($"Creating a new Address {addressRequestDto.City} {addressRequestDto.Street}");
