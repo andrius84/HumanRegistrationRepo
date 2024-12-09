@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Function to handle user registration
 async function registerUser() {
-    // Retrieve input values
     const username = document.getElementById("username").value.toLowerCase();
     const password1 = document.getElementById("password1").value;
     const password2 = document.getElementById("password2").value;
@@ -20,7 +18,6 @@ async function registerUser() {
         return;
     }
 
-    // Prepare the payload for registration
     const credentials = {
         userName: username,
         password: password1
@@ -66,25 +63,22 @@ async function getToken(username, password) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(credentials),
-            credentials: 'include' // Include cookies in the request
+            credentials: 'include'
         });
 
         if (response.ok) {
             const data = await response.json();
             console.log("Login successful");
 
-            // Store the user ID in sessionStorage
             if (data) {
-                sessionStorage.setItem("userId", data);
-                console.log("User ID saved in sessionStorage:", data);
+                sessionStorage.setItem("AccountId", data);
+                console.log("Account ID saved in sessionStorage:", data);
             } else {
-                console.warn("User ID not found in response.");
+                console.warn("Account ID not found in response.");
             }
+            console.log("Before navigation:", document.cookie);
 
-            logTokenAndCookies()
-
-            // Redirect to the next page after successful login
-            //window.location.href = 'person/person.html';
+            window.location.href = '../persondata/persondata.html';
         } else if (response.status === 404) {
             showMessage('Vartotojas nerastas, bandykite dar kartą.');
         } else {
@@ -98,7 +92,6 @@ async function getToken(username, password) {
     }
 }
 
-// Utility function to display messages
 function showMessage(message, type = 'error') {
     const messageDiv = document.getElementById("message");
     messageDiv.style.display = 'block';
@@ -115,15 +108,16 @@ function showMessage(message, type = 'error') {
     messageDiv.textContent = message;
 }
 
-function togglePasswordVisibility(passwordFieldId, toggleButton) {
-    const passwordField = document.getElementById(passwordFieldId);
+function togglePasswordVisibility(passwordId) {
+    var passwordField = document.getElementById(passwordId);
+    var toggleButton = passwordField.nextElementSibling;
 
     if (passwordField.type === "password") {
         passwordField.type = "text";
-        toggleButton.textContent = "🙈"; // Change icon to "hide" mode
+        toggleButton.textContent = "🔓";
     } else {
         passwordField.type = "password";
-        toggleButton.textContent = "👁️"; // Change icon to "show" mode
+        toggleButton.textContent = "🔒"; 
     }
 }
 
@@ -134,10 +128,6 @@ function clearMessage() {
         messageDiv.textContent = "";
     }
 }
-
-
-
-
 
 function logTokenAndCookies() {
         // Log JWT token stored in cookie (only in development)

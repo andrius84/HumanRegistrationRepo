@@ -10,14 +10,13 @@
         <form id="registrationForm">
             <input type="text" id="username" placeholder="Vartotojo vardas" required>
             
-            <!-- Password Input Fields -->
-            <div>
+            <div class="password-container">
                 <input type="password" id="password1" placeholder="Įveskite slaptažodį" required>
-                <button type="button" onclick="togglePasswordVisibility('password1')">Rodyti</button>
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password1')">🔒</button>
             </div>
-            <div>
+            <div class="password-container">
                 <input type="password" id="password2" placeholder="Pakartokite slaptažodį" required>
-                <button type="button" onclick="togglePasswordVisibility('password2')">Rodyti</button>
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password2')">🔒</button>
             </div>
 
             <div id="message"></div>

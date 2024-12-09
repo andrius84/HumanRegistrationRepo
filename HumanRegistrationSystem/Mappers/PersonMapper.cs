@@ -19,12 +19,13 @@ namespace HumanRegistrationSystem.Mappers
                 PersonalCode = personRequestDto.PersonalCode,
                 PhoneNumber = personRequestDto.PhoneNumber,
                 Email = personRequestDto.Email,
+                AccountId = personRequestDto.AccountId
             };
         }
 
-        public PersonRequestDto Map(Person person)
+        public PersonResultDto Map(Person person)
         {
-            return new PersonRequestDto
+            return new PersonResultDto
             {
                 FirstName = person.FirstName,
                 LastName = person.LastName,

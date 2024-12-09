@@ -99,9 +99,11 @@ namespace HumanRegistrationSystem.Controllers
                 Response.Cookies.Append("jwtToken", jwt, new CookieOptions
                 {
                     HttpOnly = false, // Prevent JavaScript access
-                    Secure = false,   // Only send over HTTPS
-                    SameSite = SameSiteMode.Strict, // Protect against CSRF
-                    Expires = DateTime.UtcNow.AddHours(1) // Token expiration
+                    Secure = true,   // Only send over HTTPS
+                    SameSite = SameSiteMode.None,
+                    //SameSite = SameSiteMode.Strict, // Protect against CSRF
+                    Expires = DateTime.UtcNow.AddHours(3), // Token expiration
+                    Path = "/"
                 });
 
                 // Return user ID in the response body

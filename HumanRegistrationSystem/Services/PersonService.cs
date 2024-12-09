@@ -9,13 +9,12 @@ namespace HumanRegistrationSystem.Services
     }
     public class PersonService : IPersonService
     {
-        private readonly PersonRepository _personRepository;
+        private readonly IPersonRepository _personRepository;
 
-        public PersonService(PersonRepository personRepository)
+        public PersonService(IPersonRepository personRepository)
         {
             _personRepository = personRepository;
         }
-        public PersonService() { }
 
         public Guid CreatePerson(Person person)
         {

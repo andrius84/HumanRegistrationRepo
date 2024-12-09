@@ -1,26 +1,41 @@
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("submitPersonalData").addEventListener("click", addPersonalData);
-    document.getElementById("backToLogin").addEventListener("click", function() {
-        window.location.href = '../index.html';
-    });
+document.getElementById('submitPersonalData').addEventListener('click', async () => {
+    const AccountId = sessionStorage.getItem('AccountId');
+    const personalData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        personalCode: document.getElementById('personalCode').value,
+        phoneNumber: document.getElementById('phoneNumber').value,
+        email: document.getElementById('email').value,  
+    };
+
+    await addPersonalData(AccountId, personalData);
+
+    const PersonId = sessionStorage.getItem('PersonId');
+
+    const fileInput = document.getElementById('profilePhoto');
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        await uploadProfilePhoto(PersonId, file);
+    }
 });
 
-// Function to add personal data
-async function addPersonalData(userId, personalData) {
-    const token = getCookie('authToken'); // Retrieve the token from cookies
+async function addPersonalData(AccountId, personalData) {
+    const token = getCookie('jwtToken'); 
     if (!token) {
         console.error("No token found. Please log in.");
         return;
     }
 
+    const requestData = { AccountId, ...personalData };
+
     try {
-        const response = await fetch(`https://localhost:5100/api/Person`, {
+        const response = await fetch(`https://localhost:5100/api/Person/`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(personalData),
+            body: JSON.stringify(requestData),
         });
 
         if (!response.ok) {
@@ -28,15 +43,19 @@ async function addPersonalData(userId, personalData) {
             throw new Error(`Failed to add personal data: ${error}`);
         }
 
-        console.log("Personal data added successfully!");
+        const result = await response.json();
+        console.log("Personal data added successfully! Created ID:", result.personId);
+
+        sessionStorage.setItem('personId', result.personId);
+        console.log("Person ID saved to sessionStorage:", result.personId);
+
     } catch (error) {
         console.error("Error adding personal data:", error.message);
     }
 }
 
-// Function to upload a profile photo
-async function uploadProfilePhoto(userId, file) {
-    const token = getCookie('authToken'); // Retrieve the token from cookies
+async function uploadProfilePhoto(PersonId, file) {
+    const token = getCookie('authToken');
     if (!token) {
         console.error("No token found. Please log in.");
         return;
@@ -46,7 +65,7 @@ async function uploadProfilePhoto(userId, file) {
     formData.append('file', file);
 
     try {
-        const response = await fetch(`https://localhost:5100/api/Users/${userId}/ProfilePhoto`, {
+        const response = await fetch(`https://localhost:5100/api/Picture/upload?personId=${PersonId}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -65,26 +84,16 @@ async function uploadProfilePhoto(userId, file) {
     }
 }
 
-// Example usage
-document.getElementById('submitPersonalData').addEventListener('click', async () => {
-    const userId = "1234-5678-91011"; // Replace with actual user ID after registration
-    const personalData = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        phoneNumber: document.getElementById('phoneNumber').value,
-        email: document.getElementById('email').value,
-        address: document.getElementById('address').value,
-    };
-
-    await addPersonalData(userId, personalData);
-
-    const fileInput = document.getElementById('profilePhoto');
-    if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        await uploadProfilePhoto(userId, file);
+function getCookie(cookieName) {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(`${cookieName}=`)) {
+            return cookie.substring(cookieName.length + 1);
+        }
     }
-});
-
+    return null;
+}
 
 function showMessage(message) {
     let messageDiv = document.getElementById("message");

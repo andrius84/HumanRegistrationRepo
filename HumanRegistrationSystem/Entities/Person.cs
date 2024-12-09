@@ -13,10 +13,10 @@ namespace HumanRegistrationSystem.Entities
         public string Email { get; set; } = null!;
 
         // Foreign key
-        public Guid AccountId { get; set; }
-        public Account Account { get; set; }
-        public Address? Address { get; set; }
-        public ProfilePicture? ProfilePicture { get; set; }
+        public Guid AccountId { get; set; } = Guid.Empty;
+        public Account? Account { get; set; } = null!;
+        public Address? Address { get; set; } = null!;
+        public ProfilePicture? ProfilePicture { get; set; } = null!;
 
     }
 }
