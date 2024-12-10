@@ -8,7 +8,7 @@ namespace HumanRegistrationSystem.Services
 {
     public interface IJwtService
     {
-        string GetJwtToken(Account account);
+        string GetJwtToken(Account account, Role role);
     }
 
     public class JwtService : IJwtService
@@ -22,7 +22,7 @@ namespace HumanRegistrationSystem.Services
             _issuer = conf.GetSection("Jwt:Issuer").Value ?? "";
             _audience = conf.GetSection("Jwt:Audience").Value ?? "";
         }
-        public string GetJwtToken(Account account)
+        public string GetJwtToken(Account account, Role role)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace HumanRegistrationSystem.Services
                     {
                         new (ClaimTypes.NameIdentifier, account.Id.ToString()),
                         new (ClaimTypes.Name, account.UserName),
-                        new (ClaimTypes.Role, account.Role?.Name ?? string.Empty)
+                        new (ClaimTypes.Role, role.Name)
                     }),
                     Expires = DateTime.UtcNow.AddDays(7),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

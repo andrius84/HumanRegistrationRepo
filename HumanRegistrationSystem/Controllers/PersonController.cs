@@ -23,22 +23,9 @@ namespace HumanRegistrationSystem.Controllers
             _personService = personService;
         }
 
-        //// POST: api/Person
-        //[HttpPost]
-        ////[Authorize(Roles = "User")]
-        //public async Task<IActionResult> Post([FromBody]PersonRequestDto personRequestDto)
-        //{
-        //    _logger.LogInformation($"Creating a new Person {personRequestDto.FirstName} {personRequestDto.LastName}");
-        //    var person = _personMapper.Map(personRequestDto);
-
-        //    _personService.CreatePerson(person);
-
-        //    return Created(nameof(Post), person.Id );
-        //}
-
         // POST: api/Person
         [HttpPost]
-        // [Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Post([FromBody] PersonRequestDto personRequestDto)
         {
             if (!ModelState.IsValid)

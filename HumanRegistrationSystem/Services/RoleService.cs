@@ -1,10 +1,11 @@
 ﻿using HumanRegistrationSystem.Repositories;
+using HumanRegistrationSystem.Entities;
 
 namespace HumanRegistrationSystem.Services
 {
     public interface IRoleService
     {
-        void GetRoleById(Guid id);
+        Role GetRoleById(int id);
     }
 
     public class RoleService : IRoleService
@@ -16,9 +17,9 @@ namespace HumanRegistrationSystem.Services
             _roleRepository = roleRepository;
         }
 
-        public void GetRoleById(Guid id)
+        public Role GetRoleById(int id)
         {
-            _roleRepository.GetRoleById(id);
+            return _roleRepository.GetRoleById(id);
         }
     }
 }

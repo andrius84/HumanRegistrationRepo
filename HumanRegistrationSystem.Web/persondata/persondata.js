@@ -5,21 +5,32 @@ document.getElementById('submitPersonalData').addEventListener('click', async ()
         lastName: document.getElementById('lastName').value,
         personalCode: document.getElementById('personalCode').value,
         phoneNumber: document.getElementById('phoneNumber').value,
-        email: document.getElementById('email').value,  
+        email: document.getElementById('email').value,
     };
 
-    await addPersonalData(AccountId, personalData);
+    await addPersonData(AccountId, personalData);
 
-    const PersonId = sessionStorage.getItem('PersonId');
+    const personId = sessionStorage.getItem('PersonId');
+
+    const address = {
+        city: document.getElementById('city').value,
+        street: document.getElementById('street').value,
+        houseNumber: document.getElementById('houseNumber').value,
+        apartmentNumber: document.getElementById('apartmentNumber').value,
+    };
+
+    await addPersonAddress(personId, address);
 
     const fileInput = document.getElementById('profilePhoto');
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        await uploadProfilePhoto(PersonId, file);
+        await uploadProfilePhoto(personId, file);
     }
+
+    //window.location.href = '../person/person.html';
 });
 
-async function addPersonalData(AccountId, personalData) {
+async function addPersonData(AccountId, personalData) {
     const token = getCookie('jwtToken'); 
     if (!token) {
         console.error("No token found. Please log in.");
@@ -36,6 +47,7 @@ async function addPersonalData(AccountId, personalData) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestData),
+            credentials: 'include'
         });
 
         if (!response.ok) {
@@ -44,18 +56,47 @@ async function addPersonalData(AccountId, personalData) {
         }
 
         const result = await response.json();
-        console.log("Personal data added successfully! Created ID:", result.personId);
-
-        sessionStorage.setItem('personId', result.personId);
-        console.log("Person ID saved to sessionStorage:", result.personId);
+        sessionStorage.setItem('PersonId', result.personId);
 
     } catch (error) {
         console.error("Error adding personal data:", error.message);
     }
 }
 
-async function uploadProfilePhoto(PersonId, file) {
-    const token = getCookie('authToken');
+async function addPersonAddress(personId, address) {
+    const token = getCookie('jwtToken');
+    if (!token) {
+        console.error("No token found. Please log in.");
+        return;
+    }
+
+    const requestData = { personId, ...address };
+
+    try {
+        const response = await fetch(`https://localhost:5100/api/Address`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`Failed to add address: ${error}`);
+        }
+
+        console.log("Address added successfully!");
+
+    } catch (error) {
+        console.error("Error adding address:", error.message);
+    }
+}
+
+async function uploadProfilePhoto(personId, file) {
+    const token = getCookie('jwtToken');
     if (!token) {
         console.error("No token found. Please log in.");
         return;
@@ -65,12 +106,13 @@ async function uploadProfilePhoto(PersonId, file) {
     formData.append('file', file);
 
     try {
-        const response = await fetch(`https://localhost:5100/api/Picture/upload?personId=${PersonId}`, {
+        const response = await fetch(`https://localhost:5100/api/Picture/upload?personId=${personId}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
             body: formData,
+            credentials: 'include'
         });
 
         if (!response.ok) {
@@ -79,6 +121,7 @@ async function uploadProfilePhoto(PersonId, file) {
         }
 
         console.log("Profile photo uploaded successfully!");
+
     } catch (error) {
         console.error("Error uploading profile photo:", error.message);
     }

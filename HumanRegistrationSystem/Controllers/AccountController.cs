@@ -72,7 +72,6 @@ namespace HumanRegistrationSystem.Controllers
 
             _logger.LogInformation($"Login attempt for user: {req.UserName}");
 
-            // Retrieve the account by username
             var account = _accountService.GetAccount(req.UserName!);
             if (account == null)
             {
@@ -80,7 +79,6 @@ namespace HumanRegistrationSystem.Controllers
                 return BadRequest("Invalid username or password");
             }
 
-            // Verify password
             var isPasswordValid = _accountService.VerifyPasswordHash(req.Password, account.PasswordHash, account.PasswordSalt);
             if (!isPasswordValid)
             {
@@ -90,10 +88,11 @@ namespace HumanRegistrationSystem.Controllers
 
             _logger.LogInformation($"User {req.UserName} successfully logged in");
 
+            var role = _roleService.GetRoleById(account.RoleId);
+
             try
             {
-                // Generate the JWT token
-                var jwt = _jwtService.GetJwtToken(account);
+                var jwt = _jwtService.GetJwtToken(account, role);
 
                 // Set the JWT in an HttpOnly cookie
                 Response.Cookies.Append("jwtToken", jwt, new CookieOptions
@@ -106,7 +105,6 @@ namespace HumanRegistrationSystem.Controllers
                     Path = "/"
                 });
 
-                // Return user ID in the response body
                 return Ok(account.Id);
             }
             catch (Exception ex)

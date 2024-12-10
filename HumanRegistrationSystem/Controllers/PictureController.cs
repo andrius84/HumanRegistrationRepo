@@ -22,47 +22,12 @@ namespace HumanRegistrationSystem.Controllers
             _logger = logger;
         }
 
-        //[HttpPost("upload")]
-        ////[Authorize(Roles = "User")]
-        //public async Task<IActionResult> UploadImage(IFormFile file, Guid personId)
-        //{
-        //    if (file == null || file.Length == 0)
-        //        return BadRequest("No file uploaded.");
-
-        //    var person = await _context.Persons.FindAsync(personId);
-        //    if (person == null)
-        //        return BadRequest("Person not found.");
-
-        //    using var memoryStream = new MemoryStream();
-        //    await file.CopyToAsync(memoryStream);
-        //    var originalData = memoryStream.ToArray();
-
-        //    var thumbnailData = _imageProcessor.CreateThumbnail(originalData, width: 200, height: 200);
-        //    var thumbnail = new ProfilePicture
-        //    {
-        //        FileName = file.FileName,
-        //        ContentType = file.ContentType,
-        //        Data = thumbnailData,
-        //        PersonId = personId,
-        //    };
-
-        //    _context.ProfilePictures.Add(thumbnail);
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new { thumbnailId = thumbnail.Id });
-        //}
-
         [HttpPost("upload")]
-        // [Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromQuery] Guid personId)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
-
-            // Find the person by ID
-            var person = await _context.Persons.FindAsync(personId);
-            if (person == null)
-                return NotFound("Person not found.");
 
             try
             {
@@ -71,10 +36,8 @@ namespace HumanRegistrationSystem.Controllers
                 await file.CopyToAsync(memoryStream);
                 var originalData = memoryStream.ToArray();
 
-                // Create thumbnail
                 var thumbnailData = _imageProcessor.CreateThumbnail(originalData, width: 200, height: 200);
 
-                // Create a new ProfilePicture entity
                 var thumbnail = new ProfilePicture
                 {
                     FileName = file.FileName,
@@ -83,11 +46,9 @@ namespace HumanRegistrationSystem.Controllers
                     PersonId = personId,
                 };
 
-                // Save to database
                 _context.ProfilePictures.Add(thumbnail);
                 await _context.SaveChangesAsync();
 
-                // Return success response with the thumbnail ID
                 return Ok();
             }
             catch (Exception ex)

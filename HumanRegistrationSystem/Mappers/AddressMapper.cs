@@ -19,6 +19,7 @@ namespace HumanRegistrationSystem.Mappers
                 Street = addressRequestDto.Street,
                 HouseNumber = addressRequestDto.HouseNumber,
                 ApartmentNumber = addressRequestDto.ApartmentNumber,
+                PersonId = addressRequestDto.PersonId
             };
         }
 
@@ -29,7 +30,7 @@ namespace HumanRegistrationSystem.Mappers
                 City = address.City,
                 Street = address.Street,
                 HouseNumber = address.HouseNumber,
-                ApartmentNumber = address.ApartmentNumber,
+                ApartmentNumber = address.ApartmentNumber
             };
         }
     }

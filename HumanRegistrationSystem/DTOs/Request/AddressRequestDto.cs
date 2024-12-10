@@ -21,5 +21,10 @@
         /// ApartamentNumber number of the address
         /// </summary>
         public string? ApartmentNumber  { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid PersonId { get; set; }
     }
 }
