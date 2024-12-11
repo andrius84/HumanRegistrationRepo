@@ -6,6 +6,7 @@ namespace HumanRegistrationSystem.Services
     public interface IPersonService
     {
         Guid CreatePerson(Person person);
+        Person GetPersonById(Guid accountId);
     }
     public class PersonService : IPersonService
     {
@@ -20,6 +21,11 @@ namespace HumanRegistrationSystem.Services
         {
             return _personRepository.Add(person);
 
+        }
+
+        public Person GetPersonById(Guid accountId)
+        {
+            return _personRepository.GetById(accountId);
         }
     }
 }

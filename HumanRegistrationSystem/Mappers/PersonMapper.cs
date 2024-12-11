@@ -7,6 +7,7 @@ namespace HumanRegistrationSystem.Mappers
     public interface IPersonMapper
     {
         Person Map(PersonRequestDto personRequestDto);
+        PersonResultDto Map(Person person);
     }
     public class PersonMapper : IPersonMapper
     {

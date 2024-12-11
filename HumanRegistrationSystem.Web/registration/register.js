@@ -24,7 +24,6 @@ async function registerUser() {
     };
 
     try {
-        // Register the user
         const response = await fetch('https://localhost:5100/api/Account/SignUp', {
             method: 'POST',
             headers: {
@@ -76,7 +75,6 @@ async function getToken(username, password) {
             } else {
                 console.warn("Account ID not found in response.");
             }
-            console.log("Before navigation:", document.cookie);
 
             window.location.href = '../persondata/persondata.html';
         } else if (response.status === 404) {

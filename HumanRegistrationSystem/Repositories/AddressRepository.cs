@@ -6,6 +6,7 @@ namespace HumanRegistrationSystem.Repositories
     public interface IAddressRepository
     {
         Guid Add(Address address);
+        Address GetByPersonId(Guid personId);
     }
     public class AddressRepository : IAddressRepository
     {
@@ -22,6 +23,11 @@ namespace HumanRegistrationSystem.Repositories
             _context.SaveChanges();
 
             return address.Id;
+        }
+
+        public Address GetByPersonId(Guid personId)
+        {
+            return _context.Addresses.FirstOrDefault(x => x.PersonId == personId);
         }
     }
 

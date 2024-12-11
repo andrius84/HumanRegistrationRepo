@@ -9,7 +9,7 @@ body {
   align-items: flex-start;
 }
 
-button {
+/* button {
   display: block;
   width: 100%;
   padding: 10px;
@@ -20,7 +20,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-}
+} */
 
 button:hover {
   background-color: #0056b3;
@@ -82,4 +82,54 @@ input {
 #itemsContainer {
   display: flex;
   flex-direction: column;
+}
+
+/* styles.css */
+button {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input {
+  padding: 5px;
+  margin-right: 10px;
+  font-size: 16px;
+  width: 200px;
+}
+
+input:disabled {
+  background-color: #f0f0f0;
+}
+
+  /* Basic styling */
+  .field-container {
+    margin-bottom: 10px;
+}
+
+.field-container label {
+    margin-right: 10px;
+}
+
+.field-container input {
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.field-container button {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+#updateStatus {
+    margin-top: 20px;
+    font-weight: bold;
+    color: green;
 }

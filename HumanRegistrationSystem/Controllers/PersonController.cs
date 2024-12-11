@@ -56,5 +56,24 @@ namespace HumanRegistrationSystem.Controllers
                 return StatusCode(500, "An error occurred while creating the person.");
             }
         }
+
+        // GET: api/PersonById
+        [HttpGet("PersonById")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> Get([FromQuery] Guid accountId)
+        {
+            _logger.LogInformation($"Getting Person by ID: {accountId}");
+
+            var person = _personService.GetPersonById(accountId);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            var personDto = _personMapper.Map(person);
+
+            return Ok(personDto);
+        }
     }
 }

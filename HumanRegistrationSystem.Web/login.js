@@ -19,23 +19,21 @@ async function loginUser() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(credentials),
+            credentials: 'include'
         });
 
         if (response.ok) {
-            const data = await response.json(); // Parse the JSON response
-            console.log("Login successful");
+            const data = await response.json();
 
-            // Store the user ID in sessionStorage
-            if (data.userId) {
-                sessionStorage.setItem("userId", data.userId);
-                console.log("User ID saved in sessionStorage:", data.userId);
+            if (data) {
+                sessionStorage.setItem("AccountId", data);
             } else {
-                console.warn("User ID not found in response.");
+                console.warn("accountId not found in response.");
             }
 
-            // Redirect to the next page
             window.location.href = 'person/person.html';
+
         } else if (response.status === 404) {
             showMessage('Vartotojas nerastas, bandykite dar kartą.');
         } else {

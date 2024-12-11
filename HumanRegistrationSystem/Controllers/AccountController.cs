@@ -94,7 +94,6 @@ namespace HumanRegistrationSystem.Controllers
             {
                 var jwt = _jwtService.GetJwtToken(account, role);
 
-                // Set the JWT in an HttpOnly cookie
                 Response.Cookies.Append("jwtToken", jwt, new CookieOptions
                 {
                     HttpOnly = false, // Prevent JavaScript access
@@ -113,13 +112,5 @@ namespace HumanRegistrationSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request");
             }
         }
-
-        [HttpGet]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> Get()
-        {
-            return Ok("Hello from secure API");
-        }
-
     }
 }

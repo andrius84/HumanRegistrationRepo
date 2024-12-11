@@ -10,6 +10,7 @@ namespace HumanRegistrationSystem.Services
     public interface IAddressService
     {
         Guid CreateAddress(Address address);
+        Address GetAddressByPersonId(Guid personId);
     }
     public class AddressService : IAddressService
     {
@@ -27,5 +28,11 @@ namespace HumanRegistrationSystem.Services
             var addressId = _addressRepository.Add(address);
             return addressId;
         }
+
+        public Address GetAddressByPersonId(Guid personId)
+        {
+            return _addressRepository.GetByPersonId(personId);
+        }
+
     }
 }

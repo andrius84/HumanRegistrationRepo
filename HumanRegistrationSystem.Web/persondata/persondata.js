@@ -27,7 +27,7 @@ document.getElementById('submitPersonalData').addEventListener('click', async ()
         await uploadProfilePhoto(personId, file);
     }
 
-    //window.location.href = '../person/person.html';
+    window.location.href = '../person/person.html';
 });
 
 async function addPersonData(AccountId, personalData) {

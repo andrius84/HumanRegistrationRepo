@@ -3,11 +3,6 @@
     public class PersonResultDto
     {
         /// <summary>
-        /// Id of the Person
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
         /// First name of the Person
         /// </summary>
         public string? FirstName { get; set; }

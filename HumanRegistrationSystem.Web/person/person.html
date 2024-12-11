@@ -6,21 +6,82 @@
     <link rel="stylesheet" href="../person/style.css">
   </head>
   <body>
+
     <div class="layout">
       <div class="leftColumn">
           <div class="nameContainer">
               <p>Labas, <span id="userNameDisplay"></span>!</p>
-              <p>El.paštas: <span id="emailDisplay"></span></p>
           </div>
           <div id="menu" class="menuContainer">
               <div>
-                  <button id="mainView">Pagrindinis langas</button>
-                  <button id="createItem">Sukurti įrašą</button>
+                  <button id="deleteItem">Ištrinti asmenį</button>
+                  <button id="logout">Atsijungti</button>
               </div>
           </div>
       </div>
       <div class="rightColumn">
-          <div id="itemsContainer"></div>
+          <div id="itemsContainer">
+            <h2>Asmens duomenys</h2>
+            <div id="personDataDisplay">
+                <div class="field-container">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="field-firstName" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('firstName')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('firstName')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="field-lastName" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('lastName')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('lastName')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="personalCode">Personal Code:</label>
+                    <input type="text" id="field-personalCode" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('personalCode')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('personalCode')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="text" id="field-phoneNumber" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('phoneNumber')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('phoneNumber')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="email">Email:</label>
+                    <input type="text" id="field-email" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('email')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('email')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="city">Miestas:</label>
+                    <input type="text" id="field-email" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('city')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('city')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="street">Gatvė:</label>
+                    <input type="text" id="field-email" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('street')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('street')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="houseNumber">Namo numeris:</label>
+                    <input type="text" id="field-email" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('houseNumber')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('houseNumber')">💾</button>
+                </div>
+                <div class="field-container">
+                    <label for="apartmentNumber">Buto numeris:</label>
+                    <input type="text" id="field-email" disabled />
+                    <button type="button" class="toggle-edit" onclick="toggleEdit('apartmentNumber')">🔒</button>
+                    <button type="button" class="save-edit" disabled onclick="saveField('apartmentNumber')">💾</button>
+                </div>
+            </div>
+          </div>
+    </div>
+    <div>
+
     </div>
       <script src="person.js"></script>
   </body>
