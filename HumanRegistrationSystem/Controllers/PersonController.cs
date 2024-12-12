@@ -23,7 +23,11 @@ namespace HumanRegistrationSystem.Controllers
             _personService = personService;
         }
 
-        // POST: api/Person
+        /// <summary>
+        /// Creates a new Person
+        /// </summary>
+        /// <param name="personRequestDto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> Post([FromBody] PersonRequestDto personRequestDto)
@@ -57,8 +61,12 @@ namespace HumanRegistrationSystem.Controllers
             }
         }
 
-        // GET: api/PersonById
-        [HttpGet("PersonById")]
+        /// <summary>
+        ///   
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
+        [HttpGet("PersonByAccountId")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> Get([FromQuery] Guid accountId)
         {
@@ -75,5 +83,62 @@ namespace HumanRegistrationSystem.Controllers
 
             return Ok(personDto);
         }
+
+        /// <summary>
+        /// Updates the FirstName of a person with the given accountId
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="firstName"></param>
+        /// <returns></returns>
+        [HttpPut("{accountId}/FirstName")]
+        public async Task<IActionResult> UpdateFirstName(Guid accountId, [FromBody] string firstName)
+        {
+            _logger.LogInformation($"Updating FirstName for AccountId: {accountId}");
+            _personService.UpdateFirstName(accountId, firstName);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates the LastName of a person with the given accountId
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="lastName"></param>
+        /// <returns></returns>
+        [HttpPut("{accountId}/LastName")]
+        public async Task<IActionResult> UpdateLastName(Guid accountId, [FromBody] string lastName)
+        {
+            _logger.LogInformation($"Updating LastName for AccountId: {accountId}");
+            _personService.UpdateLastName(accountId, lastName);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates the Email of a person with the given accountId
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpPut("{accountId}/Email")]
+        public async Task<IActionResult> UpdateEmail(Guid accountId, [FromBody] string email)
+        {
+            _logger.LogInformation($"Updating Email for AccountId: {accountId}");
+            _personService.UpdateEmail(accountId, email);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates the PhoneNumber of a person with the given accountId
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        [HttpPut("{accountId}/PhoneNumber")]
+        public async Task<IActionResult> UpdatePhoneNumber(Guid accountId, [FromBody] string phoneNumber)
+        {
+            _logger.LogInformation($"Updating PhoneNumber for AccountId: {accountId}");
+            _personService.UpdatePhoneNumber(accountId, phoneNumber);
+            return NoContent();
+        }
     }
 }
+

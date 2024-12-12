@@ -11,6 +11,10 @@ namespace HumanRegistrationSystem.Services
     {
         Guid CreateAddress(Address address);
         Address GetAddressByPersonId(Guid personId);
+        bool UpdateApartmentNumber(Guid accountId, string apartmentNumber);
+        bool UpdateCity(Guid accountId, string city);
+        bool UpdateHouseNumber(Guid accountId, string houseNumber);
+        bool UpdateStreet(Guid accountId, string street);
     }
     public class AddressService : IAddressService
     {
@@ -32,6 +36,30 @@ namespace HumanRegistrationSystem.Services
         public Address GetAddressByPersonId(Guid personId)
         {
             return _addressRepository.GetByPersonId(personId);
+        }
+
+        public bool UpdateCity(Guid accountId, string city)
+        {
+            _addressRepository.UpdateField(accountId, "City", city);
+            return true;
+        }
+
+        public bool UpdateStreet(Guid accountId, string street)
+        {
+            _addressRepository.UpdateField(accountId, "Street", street);
+            return true;
+        }
+
+        public bool UpdateHouseNumber(Guid accountId, string houseNumber)
+        {
+            _addressRepository.UpdateField(accountId, "HouseNumber", houseNumber);
+            return true;
+        }
+
+        public bool UpdateApartmentNumber(Guid accountId, string apartmentNumber)
+        {
+            _addressRepository.UpdateField(accountId, "ApartmentNumber", apartmentNumber);
+            return true;
         }
 
     }

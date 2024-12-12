@@ -1,5 +1,7 @@
 ﻿using HumanRegistrationSystem.Entities;
 using HumanRegistrationSystem.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace HumanRegistrationSystem.Services
 {
@@ -7,6 +9,10 @@ namespace HumanRegistrationSystem.Services
     {
         Guid CreatePerson(Person person);
         Person GetPersonById(Guid accountId);
+        bool UpdateEmail(Guid accountId, string email);
+        bool UpdateFirstName(Guid accountId, string firstName);
+        bool UpdateLastName(Guid accountId, string lastName);
+        bool UpdatePhoneNumber(Guid accountId, string phoneNumber);
     }
     public class PersonService : IPersonService
     {
@@ -26,6 +32,30 @@ namespace HumanRegistrationSystem.Services
         public Person GetPersonById(Guid accountId)
         {
             return _personRepository.GetById(accountId);
+        }
+
+        public bool UpdateFirstName(Guid accountId, string firstName)
+        {
+             _personRepository.UpdateField(accountId, "FirstName", firstName);
+            return true;
+        }
+
+        public bool UpdateLastName(Guid accountId, string lastName)
+        {
+             _personRepository.UpdateField(accountId, "LastName", lastName);
+            return true;
+        }
+
+        public bool UpdateEmail(Guid accountId, string email)
+        {
+             _personRepository.UpdateField(accountId, "Email", email);
+            return true;
+        }
+
+        public bool UpdatePhoneNumber(Guid accountId, string phoneNumber)
+        {
+             _personRepository.UpdateField(accountId, "PhoneNumber", phoneNumber);
+            return true;
         }
     }
 }

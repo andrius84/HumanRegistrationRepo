@@ -22,6 +22,7 @@ namespace HumanRegistrationSystem.Database
                 .HasForeignKey<Person>(p => p.AccountId)
                 .OnDelete(DeleteBehavior.Cascade); // If Account is deleted, delete Person too
 
+            // Account-Role
             modelBuilder.Entity<Account>()
                 .HasOne(a => a.Role)
                 .WithMany(r => r.Accounts)

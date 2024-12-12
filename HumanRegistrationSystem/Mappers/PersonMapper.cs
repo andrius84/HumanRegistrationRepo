@@ -28,6 +28,7 @@ namespace HumanRegistrationSystem.Mappers
         {
             return new PersonResultDto
             {
+                Id = person.Id,
                 FirstName = person.FirstName,
                 LastName = person.LastName,
                 PersonalCode = person.PersonalCode,

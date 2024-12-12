@@ -55,5 +55,41 @@ namespace HumanRegistrationSystem.Controllers
 
             return Ok(addressDto);
         }
+
+        [HttpPut("{accountId}/City")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateCity(Guid accountId, [FromBody] string city)
+        {
+            _logger.LogInformation($"Updating city for accountId: {accountId}");
+            _addressService.UpdateCity(accountId, city);
+            return NoContent();
+        }
+
+        [HttpPut("{accountId}/Street")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateStreet(Guid accountId, [FromBody] string street)
+        {
+            _logger.LogInformation($"Updating street for accountId: {accountId}");
+            _addressService.UpdateStreet(accountId, street);
+            return NoContent();
+        }
+
+        [HttpPut("{accountId}/HouseNumber")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateHouseNumber(Guid accountId, [FromBody] string houseNumber)
+        {
+            _logger.LogInformation($"Updating house number for accountId: {accountId}");
+            _addressService.UpdateHouseNumber(accountId, houseNumber);
+            return NoContent();
+        }
+
+        [HttpPut("{accountId}/ApartmentNumber")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateApartmentNumber(Guid accountId, [FromBody] string apartmentNumber)
+        {
+            _logger.LogInformation($"Updating ApartmentNumber for accountId: {accountId}");
+            _addressService.UpdateApartmentNumber(accountId, apartmentNumber);
+            return NoContent();
+        }
     }
 }
