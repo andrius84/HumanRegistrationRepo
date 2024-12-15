@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HumanRegistrationSystem.Attributes
+namespace HumanRegistrationSystem.Validators
 {
     public class FileSizeAttribute : ValidationAttribute
     {
@@ -18,7 +18,7 @@ namespace HumanRegistrationSystem.Attributes
 
             if (file.Length > _maxFileSize)
             {
-                return new ValidationResult($"File size cannot exceed {(_maxFileSize / 1024.0 / 1024.0):F2} MB.");
+                return new ValidationResult($"File size cannot exceed {_maxFileSize / 1024.0 / 1024.0:F2} MB.");
             }
 
             return ValidationResult.Success;

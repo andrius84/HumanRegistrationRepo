@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HumanRegistrationSystem.Attributes
+namespace HumanRegistrationSystem.Validators
 {
-    public class FileExtensionAttribute : ValidationAttribute
+    public class AllowedExtensionsAttribute : ValidationAttribute
     {
         private readonly string[] _extensions;
 
-        public FileExtensionAttribute(string[] extensions)
+        public AllowedExtensionsAttribute(string[] extensions)
         {
             _extensions = extensions;
         }

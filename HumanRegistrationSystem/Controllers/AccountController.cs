@@ -98,10 +98,9 @@ namespace HumanRegistrationSystem.Controllers
                 {
                     HttpOnly = false, // Prevent JavaScript access
                     Secure = true,   // Only send over HTTPS
-                    SameSite = SameSiteMode.None,
-                    //SameSite = SameSiteMode.Strict, // Protect against CSRF
+                    SameSite = SameSiteMode.None, // Allow cross-site cookies
                     Expires = DateTime.UtcNow.AddHours(3), // Token expiration
-                    Path = "/"
+                    Path = "/" // Allow all requests to read the cookie
                 });
 
                 return Ok(account.Id);
@@ -111,6 +110,31 @@ namespace HumanRegistrationSystem.Controllers
                 _logger.LogError(ex, "Error generating JWT for user: {UserName}", req.UserName);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request");
             }
+        }
+
+        /// <summary>
+        /// delete account
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("Delete")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteAccount(Guid id)
+        {
+            _logger.LogInformation($"Deleting account with ID: {id}");
+
+            var account = _accountService.GetAccountById(id);
+            if (account == null)
+            {
+                _logger.LogWarning($"Account with ID: {id} not found");
+                return NotFound("Account not found");
+            }
+
+            _accountService.DeleteAccount(account.Id);
+
+            return NoContent();
         }
     }
 }

@@ -56,39 +56,39 @@ namespace HumanRegistrationSystem.Controllers
             return Ok(addressDto);
         }
 
-        [HttpPut("{accountId}/City")]
+        [HttpPut("{personId}/City")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateCity(Guid accountId, [FromBody] string city)
+        public async Task<IActionResult> UpdateCity(Guid personId, [FromBody] string city)
         {
-            _logger.LogInformation($"Updating city for accountId: {accountId}");
-            _addressService.UpdateCity(accountId, city);
+            _logger.LogInformation($"Updating city for accountId: {personId}");
+            _addressService.UpdateCity(personId, city);
             return NoContent();
         }
 
-        [HttpPut("{accountId}/Street")]
+        [HttpPut("{personId}/Street")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateStreet(Guid accountId, [FromBody] string street)
+        public async Task<IActionResult> UpdateStreet(Guid personId, [FromBody] string street)
         {
-            _logger.LogInformation($"Updating street for accountId: {accountId}");
-            _addressService.UpdateStreet(accountId, street);
+            _logger.LogInformation($"Updating street for accountId: {personId}");
+            _addressService.UpdateStreet(personId, street);
             return NoContent();
         }
 
-        [HttpPut("{accountId}/HouseNumber")]
+        [HttpPut("{personId}/HouseNumber")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateHouseNumber(Guid accountId, [FromBody] string houseNumber)
+        public async Task<IActionResult> UpdateHouseNumber(Guid personId, [FromBody] string houseNumber)
         {
-            _logger.LogInformation($"Updating house number for accountId: {accountId}");
-            _addressService.UpdateHouseNumber(accountId, houseNumber);
+            _logger.LogInformation($"Updating house number for accountId: {personId}");
+            _addressService.UpdateHouseNumber(personId, houseNumber);
             return NoContent();
         }
 
-        [HttpPut("{accountId}/ApartmentNumber")]
+        [HttpPut("{personId}/ApartmentNumber")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateApartmentNumber(Guid accountId, [FromBody] string apartmentNumber)
+        public async Task<IActionResult> UpdateApartmentNumber(Guid personId, [FromBody] string apartmentNumber)
         {
-            _logger.LogInformation($"Updating ApartmentNumber for accountId: {accountId}");
-            _addressService.UpdateApartmentNumber(accountId, apartmentNumber);
+            _logger.LogInformation($"Updating ApartmentNumber for accountId: {personId}");
+            _addressService.UpdateApartmentNumber(personId, apartmentNumber);
             return NoContent();
         }
     }

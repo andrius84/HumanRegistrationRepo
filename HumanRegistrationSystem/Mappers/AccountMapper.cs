@@ -24,6 +24,7 @@ namespace HumanRegistrationSystem.Mappers
             _accountService.CreatePasswordHash(dto.Password!, out var passwordHash, out var passwordSalt);
             return new Account
             {
+                Id = dto.Id,
                 UserName = dto.UserName!,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,

@@ -35,3 +35,48 @@ input {
   border-radius: 5px;
   box-sizing: border-box;
 }
+
+.container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+#backToLogin {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: white;
+  background-color: #7c7e81;
+}
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%; /* Make sure the input field occupies the full width */
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 35px; /* Create enough space for the button inside the input field */
+}
+
+/* Password toggle button style (smaller button inside the input field) */
+.password-container .toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 25%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+  padding: 0; /* Ensure no extra padding */
+  width: auto; /* Prevent it from expanding to the full width */
+  height: auto; /* Prevent it from expanding vertically */
+}

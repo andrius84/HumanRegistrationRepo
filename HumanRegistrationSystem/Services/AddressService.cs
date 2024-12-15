@@ -12,7 +12,7 @@ namespace HumanRegistrationSystem.Services
         Guid CreateAddress(Address address);
         Address GetAddressByPersonId(Guid personId);
         bool UpdateApartmentNumber(Guid accountId, string apartmentNumber);
-        bool UpdateCity(Guid accountId, string city);
+        bool UpdateCity(Guid personId, string city);
         bool UpdateHouseNumber(Guid accountId, string houseNumber);
         bool UpdateStreet(Guid accountId, string street);
     }
@@ -38,27 +38,27 @@ namespace HumanRegistrationSystem.Services
             return _addressRepository.GetByPersonId(personId);
         }
 
-        public bool UpdateCity(Guid accountId, string city)
+        public bool UpdateCity(Guid personId, string city)
         {
-            _addressRepository.UpdateField(accountId, "City", city);
+            _addressRepository.UpdateField(personId, "City", city);
             return true;
         }
 
-        public bool UpdateStreet(Guid accountId, string street)
+        public bool UpdateStreet(Guid personId, string street)
         {
-            _addressRepository.UpdateField(accountId, "Street", street);
+            _addressRepository.UpdateField(personId, "Street", street);
             return true;
         }
 
-        public bool UpdateHouseNumber(Guid accountId, string houseNumber)
+        public bool UpdateHouseNumber(Guid personId, string houseNumber)
         {
-            _addressRepository.UpdateField(accountId, "HouseNumber", houseNumber);
+            _addressRepository.UpdateField(personId, "HouseNumber", houseNumber);
             return true;
         }
 
-        public bool UpdateApartmentNumber(Guid accountId, string apartmentNumber)
+        public bool UpdateApartmentNumber(Guid personId, string apartmentNumber)
         {
-            _addressRepository.UpdateField(accountId, "ApartmentNumber", apartmentNumber);
+            _addressRepository.UpdateField(personId, "ApartmentNumber", apartmentNumber);
             return true;
         }
 

@@ -12,6 +12,9 @@ namespace HumanRegistrationSystem.Services
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
         bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt);
         Account GetAccount(string userName);
+        Account GetAccountById(Guid accountId);
+        void DeleteAccount(Guid accountId);
+        
     }
 
     public class AccountService : IAccountService
@@ -61,9 +64,14 @@ namespace HumanRegistrationSystem.Services
             return _accountRepository.Get(userName);
         }
 
+        public Account GetAccountById(Guid accountId)
+        {
+            return _accountRepository.Get(accountId);
+        }
 
+        public void DeleteAccount(Guid accountId) {
 
-
-
+            _accountRepository.Delete(accountId);
+        }
     }
 }

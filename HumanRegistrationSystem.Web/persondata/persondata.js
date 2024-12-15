@@ -65,10 +65,6 @@ async function addPersonData(AccountId, personalData) {
 
 async function addPersonAddress(personId, address) {
     const token = getCookie('jwtToken');
-    if (!token) {
-        console.error("No token found. Please log in.");
-        return;
-    }
 
     const requestData = { personId, ...address };
 
@@ -97,10 +93,6 @@ async function addPersonAddress(personId, address) {
 
 async function uploadProfilePhoto(personId, file) {
     const token = getCookie('jwtToken');
-    if (!token) {
-        console.error("No token found. Please log in.");
-        return;
-    }
 
     const formData = new FormData();
     formData.append('file', file);

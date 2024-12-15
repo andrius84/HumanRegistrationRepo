@@ -7,19 +7,14 @@
   </head>
   <body>
     <div class="container">
-      <form action="">
-        <div>
           <input id="username" type="text" placeholder="Vardas" name="username" required>
-          <input id="password" type="text" placeholder="Slaptažodis" name="password" required>
-        </div>
+          <div class="password-container">
+            <input type="password" id="password" placeholder="Slaptažodis" required>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password')">🔒</button>
+          </div>
         <div id="message"></div>
-        <div>
           <button type="button" id="loginButton">Prisijungti</button>
-        </div>
-        <div>
           <button type="button" id="registerButton">Registruotis</button>
-        </div>        
-      </form>
     </div>
     <script src="login.js"></script>
   </body>

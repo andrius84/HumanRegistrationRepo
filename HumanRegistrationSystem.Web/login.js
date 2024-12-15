@@ -47,6 +47,19 @@ async function loginUser() {
     }
 }
 
+function togglePasswordVisibility(passwordId) {
+    var passwordField = document.getElementById(passwordId);
+    var toggleButton = passwordField.nextElementSibling;
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleButton.textContent = "🔓";
+    } else {
+        passwordField.type = "password";
+        toggleButton.textContent = "🔒"; 
+    }
+}
+
 function showMessage(message) {
     let messageDiv = document.getElementById("message");
     if (!messageDiv) {

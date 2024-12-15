@@ -6,11 +6,11 @@
     <link rel="stylesheet" href="../person/style.css">
   </head>
   <body>
-
     <div class="layout">
       <div class="leftColumn">
           <div class="nameContainer">
-              <p>Labas, <span id="userNameDisplay"></span>!</p>
+              <p>Vartotojas: <span id="showEmail"></span></p>
+              <img id="profilePictureContainer" alt="Profile Picture" />
           </div>
           <div id="menu" class="menuContainer">
               <div>
@@ -20,9 +20,7 @@
           </div>
       </div>
       <div class="rightColumn">
-          <div id="itemsContainer">
             <h2>Asmens duomenys</h2>
-            <div id="personDataDisplay">
                 <div class="field-container">
                     <label for="firstName">First Name:</label>
                     <input type="text" id="field-firstName" disabled />
@@ -78,11 +76,8 @@
                     <button type="button" class="save-edit" disabled onclick="saveField('apartmentNumber')">💾</button>
                 </div>
             </div>
-          </div>
+        <div>
     </div>
-    <div>
-
-    </div>
-      <script src="person.js"></script>
+    <script src="person.js"></script>
   </body>
 </html>

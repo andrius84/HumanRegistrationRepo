@@ -10,18 +10,13 @@ namespace HumanRegistrationSystem.DTOs.Request
         /// </summary>
         [Required]
         [StringLength(50, MinimumLength = 3)]
-        public string? UserName { get; set; }
+        public string UserName { get; set; } = null!;
 
         /// <summary>
         /// Password of the account
         /// </summary>
+        [Required]
         [PasswordValidator]
-        public string? Password { get; set; }
-
-        ///// <summary>
-        ///// Role of the account
-        ///// </summary>
-        //[RoleValidator]
-        //public string? RoleId { get; set; }
+        public string Password { get; set; } = null!;
     }
 }

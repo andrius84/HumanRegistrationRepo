@@ -6,6 +6,7 @@ namespace HumanRegistrationSystem.Repositories
     public interface IAccountRepository
     {
         Account Get(string username);
+        Account Get(Guid id);
         Guid AddAccount(Account account);
         void Delete(Guid id);
     }
@@ -25,6 +26,11 @@ namespace HumanRegistrationSystem.Repositories
                 throw new ArgumentNullException(nameof(userName));
 
             return _context.Accounts.FirstOrDefault(a => a.UserName == userName);
+        }
+
+        public Account Get(Guid id)
+        {
+            return _context.Accounts.FirstOrDefault(x => x.Id == id);
         }
 
         public Guid AddAccount(Account account)
