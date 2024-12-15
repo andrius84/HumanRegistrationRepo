@@ -9,6 +9,7 @@ namespace HumanRegistrationSystem.Services
     public interface IPictureService
     {
         ProfilePicture GetPictureByPersonId(Guid personId);
+        void UploadPicture(ProfilePicture profilePicture);
     }
     public class PictureService : IPictureService
     {

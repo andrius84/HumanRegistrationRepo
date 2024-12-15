@@ -12,6 +12,7 @@ namespace HumanRegistrationSystem.Services
         bool UpdateEmail(Guid accountId, string email);
         bool UpdateFirstName(Guid accountId, string firstName);
         bool UpdateLastName(Guid accountId, string lastName);
+        bool UpdatePersonalCode(Guid accountId, string personalCode);
         bool UpdatePhoneNumber(Guid accountId, string phoneNumber);
     }
     public class PersonService : IPersonService
@@ -43,6 +44,12 @@ namespace HumanRegistrationSystem.Services
         public bool UpdateLastName(Guid accountId, string lastName)
         {
              _personRepository.UpdateField(accountId, "LastName", lastName);
+            return true;
+        }
+
+        public bool UpdatePersonalCode(Guid accountId, string personalCode)
+        {
+            _personRepository.UpdateField(accountId, "PersonalCode", personalCode);
             return true;
         }
 

@@ -31,19 +31,26 @@ async function loginUser() {
             } else {
                 console.warn("accountId not found in response.");
             }
-
             window.location.href = 'person/person.html';
 
-        } else if (response.status === 404) {
-            showMessage('Vartotojas nerastas, bandykite dar kartą.');
         } else {
-            const error = await response.text();
-            console.error("Login failed:", error);
-            showMessage('Įvyko klaida. Bandykite dar kartą.');
+            const errorData = await response.json(); 
+
+            if (response.status === 400) {
+                let errorMessage = '';
+                for (const field in errorData.errors) {
+                    if (errorData.errors.hasOwnProperty(field)) {
+                        errorMessage += errorData.errors[field].join(' ') + ' ';
+                    }
+                }
+                showMessage(errorMessage.trim(), 'error');
+            } else {
+                showMessage(errorData.title || 'Unknown error occurred.', 'error');
+            }
         }
-    } catch (error) {
-        console.error("Network error:", error);
-        showMessage('Tinklo klaida. Bandykite dar kartą.');
+    }
+    catch (error) {
+        showMessage('Nenustatyta klaida, bandykite dar kartą.');
     }
 }
 
@@ -60,19 +67,31 @@ function togglePasswordVisibility(passwordId) {
     }
 }
 
-function showMessage(message) {
+function showMessage(message, type = 'info', duration = 5000) {
+    const container = document.querySelector('.container');
     let messageDiv = document.getElementById("message");
+
+    // Create the message div if it doesn't exist
     if (!messageDiv) {
         messageDiv = document.createElement("div");
         messageDiv.id = "message";
         document.body.appendChild(messageDiv);
     }
-    messageDiv.style.display = 'block';
-    messageDiv.style.backgroundColor = 'red';
-    messageDiv.style.color = 'white';
-    messageDiv.style.padding = '5px';
-    messageDiv.style.borderRadius = '5px';
-    messageDiv.style.textAlign = 'center';
-    
+
+    // Clear existing type-specific classes
+    messageDiv.className = ''; 
+
+    // Add the appropriate class based on the type
+    messageDiv.classList.add(`message-${type}`);
+
+    // Set the message content
     messageDiv.textContent = message;
-  }
+
+    // Show the message
+    messageDiv.style.display = 'block';
+
+    // Auto-dismiss after the specified duration
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, duration);
+}

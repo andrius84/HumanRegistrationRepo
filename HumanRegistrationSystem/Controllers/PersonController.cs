@@ -29,7 +29,7 @@ namespace HumanRegistrationSystem.Controllers
         /// <param name="personRequestDto"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Post([FromBody] PersonRequestDto personRequestDto)
         {
             if (!ModelState.IsValid)
@@ -42,16 +42,12 @@ namespace HumanRegistrationSystem.Controllers
             {
                 _logger.LogInformation($"Creating a new Person: {personRequestDto.FirstName} {personRequestDto.LastName}");
 
-                // Map DTO to entity
                 var person = _personMapper.Map(personRequestDto);
 
-                // Create person
                 _personService.CreatePerson(person);
 
-                // Log success
                 _logger.LogInformation($"Person created successfully with ID: {person.Id}");
 
-                // Return Created response with the person's ID
                 return CreatedAtAction(nameof(Post), new { id = person.Id }, new { personId = person.Id });
             }
             catch (Exception ex)
@@ -67,7 +63,7 @@ namespace HumanRegistrationSystem.Controllers
         /// <param name="accountId"></param>
         /// <returns></returns>
         [HttpGet("PersonByAccountId")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Get([FromQuery] Guid accountId)
         {
             _logger.LogInformation($"Getting Person by ID: {accountId}");
@@ -91,6 +87,7 @@ namespace HumanRegistrationSystem.Controllers
         /// <param name="firstName"></param>
         /// <returns></returns>
         [HttpPut("{accountId}/FirstName")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateFirstName(Guid accountId, [FromBody] string firstName)
         {
             _logger.LogInformation($"Updating FirstName for AccountId: {accountId}");
@@ -105,10 +102,20 @@ namespace HumanRegistrationSystem.Controllers
         /// <param name="lastName"></param>
         /// <returns></returns>
         [HttpPut("{accountId}/LastName")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateLastName(Guid accountId, [FromBody] string lastName)
         {
             _logger.LogInformation($"Updating LastName for AccountId: {accountId}");
             _personService.UpdateLastName(accountId, lastName);
+            return NoContent();
+        }
+
+        [HttpPut("{accountId}/personalCode")]
+        [Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> UpdatePersonalCode(Guid accountId, [FromBody] string personalCode)
+        {
+            _logger.LogInformation($"Updating Personal Code for AccountId: {accountId}");
+            _personService.UpdatePersonalCode(accountId, personalCode);
             return NoContent();
         }
 
@@ -119,6 +126,7 @@ namespace HumanRegistrationSystem.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPut("{accountId}/Email")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateEmail(Guid accountId, [FromBody] string email)
         {
             _logger.LogInformation($"Updating Email for AccountId: {accountId}");
@@ -133,6 +141,7 @@ namespace HumanRegistrationSystem.Controllers
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
         [HttpPut("{accountId}/PhoneNumber")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdatePhoneNumber(Guid accountId, [FromBody] string phoneNumber)
         {
             _logger.LogInformation($"Updating PhoneNumber for AccountId: {accountId}");

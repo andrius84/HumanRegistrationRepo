@@ -14,33 +14,57 @@ namespace HumanRegistrationSystem.Controllers
     [Route("api/[controller]")]
     public class PictureController : ControllerBase
     {
-        private readonly PictureMapper _pictureMapper;
-        private readonly PictureService _pictureService;
+        private readonly IPictureMapper _pictureMapper;
+        private readonly IPictureService _pictureService;
         private readonly ILogger<PictureController> _logger;
 
-        public PictureController(PictureMapper pictureMapper, PictureService pictureService, ILogger<PictureController> logger)
+        public PictureController(IPictureMapper pictureMapper, IPictureService pictureService, ILogger<PictureController> logger)
         {
             _pictureMapper = pictureMapper;
             _pictureService = pictureService;
             _logger = logger;
         }
 
+        //[HttpPost("upload")]
+        //[Authorize(Roles = "User,Admin")]
+        //public async Task<IActionResult> UploadImage([FromBody] PictureRequestDto pictureRequestDto)
+        //{
+        //    if (pictureRequestDto.Data == null)
+        //        return BadRequest("No file uploaded.");
+
+        //    var thumbnail = _pictureMapper.Map(pictureRequestDto);
+            
+        //    _pictureService.UploadPicture(thumbnail);
+
+        //    return Ok();           
+        //}
+
         [HttpPost("upload")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> UploadImage([FromBody] PictureRequestDto pictureRequestDto)
+        [Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] Guid personId)
         {
-            if (pictureRequestDto.Data == null)
+            if (file == null || file.Length == 0)
+            {
                 return BadRequest("No file uploaded.");
+            }
+
+            var pictureRequestDto = new PictureRequestDto
+            {
+                FileName = file.FileName,
+                ContentType = file.ContentType,
+                Data = file,
+                PersonId = personId,
+            };
 
             var thumbnail = _pictureMapper.Map(pictureRequestDto);
-            
+
             _pictureService.UploadPicture(thumbnail);
 
-            return Ok();           
+            return Ok(new { Message = "Profile photo uploaded successfully." });
         }
 
         [HttpGet("{personId}")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> GetImageByPersonId(Guid personId)
         {
             var thumbnail = _pictureService.GetPictureByPersonId(personId);

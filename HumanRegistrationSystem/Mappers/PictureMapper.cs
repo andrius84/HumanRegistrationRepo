@@ -8,6 +8,8 @@ namespace HumanRegistrationSystem.Mappers
 {
     public interface IPictureMapper
     {
+        ProfilePicture Map(PictureRequestDto pictureRequestDto);
+        PictureResultDto Map(ProfilePicture profilePicture);
     }
     public class PictureMapper : IPictureMapper
     {
@@ -25,6 +27,7 @@ namespace HumanRegistrationSystem.Mappers
 
             return new ProfilePicture
             {
+                FileName = pictureRequestDto.FileName,
                 ContentType = pictureRequestDto.Data.ContentType,
                 Data = thumbnailData,
                 PersonId = pictureRequestDto.PersonId

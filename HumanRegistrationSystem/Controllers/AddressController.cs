@@ -25,7 +25,7 @@ namespace HumanRegistrationSystem.Controllers
 
         // POST: api/Address
         [HttpPost]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Post([FromBody] AddressRequestDto addressRequestDto)
         {
             _logger.LogInformation($"Creating a new Address {addressRequestDto.City} {addressRequestDto.Street}");
@@ -39,7 +39,7 @@ namespace HumanRegistrationSystem.Controllers
 
         // GET: api/AddressByPersonId
         [HttpGet("AddressByPersonId")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Get([FromQuery] Guid personId)
         {
             _logger.LogInformation($"Getting Address by PersonId {personId}");
@@ -57,7 +57,7 @@ namespace HumanRegistrationSystem.Controllers
         }
 
         [HttpPut("{personId}/City")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateCity(Guid personId, [FromBody] string city)
         {
             _logger.LogInformation($"Updating city for accountId: {personId}");
@@ -66,7 +66,7 @@ namespace HumanRegistrationSystem.Controllers
         }
 
         [HttpPut("{personId}/Street")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateStreet(Guid personId, [FromBody] string street)
         {
             _logger.LogInformation($"Updating street for accountId: {personId}");
@@ -75,7 +75,7 @@ namespace HumanRegistrationSystem.Controllers
         }
 
         [HttpPut("{personId}/HouseNumber")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateHouseNumber(Guid personId, [FromBody] string houseNumber)
         {
             _logger.LogInformation($"Updating house number for accountId: {personId}");
@@ -84,7 +84,7 @@ namespace HumanRegistrationSystem.Controllers
         }
 
         [HttpPut("{personId}/ApartmentNumber")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateApartmentNumber(Guid personId, [FromBody] string apartmentNumber)
         {
             _logger.LogInformation($"Updating ApartmentNumber for accountId: {personId}");

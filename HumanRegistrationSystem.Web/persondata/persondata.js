@@ -96,9 +96,10 @@ async function uploadProfilePhoto(personId, file) {
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('personId', personId);
 
     try {
-        const response = await fetch(`https://localhost:5100/api/Picture/upload?personId=${personId}`, {
+        const response = await fetch('https://localhost:5100/api/Picture/upload', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

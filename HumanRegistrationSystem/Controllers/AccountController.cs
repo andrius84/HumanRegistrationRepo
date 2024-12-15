@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using HumanRegistrationSystem.Models;
 
 namespace HumanRegistrationSystem.Controllers
 {
@@ -57,8 +58,6 @@ namespace HumanRegistrationSystem.Controllers
         /// <response code="400">Model validation error</response>
         /// <response code="500">System error</response>
         [HttpPost("Login")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -67,7 +66,7 @@ namespace HumanRegistrationSystem.Controllers
             if (req == null || string.IsNullOrWhiteSpace(req.UserName) || string.IsNullOrWhiteSpace(req.Password))
             {
                 _logger.LogWarning("Invalid login request");
-                return BadRequest("Invalid request. Username and password are required.");
+                return BadRequest(new ApiErrorResponse { Message = "Įveskite vartotoją ir slaptažodį" });
             }
 
             _logger.LogInformation($"Login attempt for user: {req.UserName}");
@@ -76,14 +75,14 @@ namespace HumanRegistrationSystem.Controllers
             if (account == null)
             {
                 _logger.LogWarning($"User {req.UserName} not found");
-                return BadRequest("Invalid username or password");
+                return BadRequest(new ApiErrorResponse { Message = "Neteisingas vartotojas arba slaptažodis" });
             }
 
             var isPasswordValid = _accountService.VerifyPasswordHash(req.Password, account.PasswordHash, account.PasswordSalt);
             if (!isPasswordValid)
             {
                 _logger.LogWarning($"Invalid password for user: {req.UserName}");
-                return BadRequest("Invalid username or password");
+                return BadRequest(new ApiErrorResponse { Message = "Invalid username or password" });
             }
 
             _logger.LogInformation($"User {req.UserName} successfully logged in");
@@ -96,11 +95,11 @@ namespace HumanRegistrationSystem.Controllers
 
                 Response.Cookies.Append("jwtToken", jwt, new CookieOptions
                 {
-                    HttpOnly = false, // Prevent JavaScript access
-                    Secure = true,   // Only send over HTTPS
-                    SameSite = SameSiteMode.None, // Allow cross-site cookies
-                    Expires = DateTime.UtcNow.AddHours(3), // Token expiration
-                    Path = "/" // Allow all requests to read the cookie
+                    HttpOnly = false,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTime.UtcNow.AddHours(3),
+                    Path = "/"
                 });
 
                 return Ok(account.Id);
@@ -108,7 +107,7 @@ namespace HumanRegistrationSystem.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error generating JWT for user: {UserName}", req.UserName);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request");
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiErrorResponse { Message = "An error occurred while processing your request", Details = ex.Message });
             }
         }
 
@@ -117,18 +116,18 @@ namespace HumanRegistrationSystem.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete("Delete/{accountId}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteAccount(Guid id)
+        public async Task<IActionResult> DeleteAccount(Guid accountId)
         {
-            _logger.LogInformation($"Deleting account with ID: {id}");
+            _logger.LogInformation($"Deleting account with ID: {accountId}");
 
-            var account = _accountService.GetAccountById(id);
+            var account = _accountService.GetAccountById(accountId);
             if (account == null)
             {
-                _logger.LogWarning($"Account with ID: {id} not found");
+                _logger.LogWarning($"Account with ID: {accountId} not found");
                 return NotFound("Account not found");
             }
 

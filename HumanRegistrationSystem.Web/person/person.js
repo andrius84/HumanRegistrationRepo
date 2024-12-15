@@ -1,24 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('deleteItem').addEventListener('click', deleteItem);
+    document.getElementById('deleteItem').addEventListener('click', deleteAccount);
     document.getElementById("logout").addEventListener("click", logout);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
     const accountId = sessionStorage.getItem('AccountId');
-    const personId = sessionStorage.getItem('PersonId');
     if (accountId) {
         fetchPersonData(accountId);
     } else {
         alert("Account ID not found in session storage. Please log in.");
     }
-    if (personId) {
-        fetchAddressData(personId);
-        fetchProfilePicture(personId);
-    } else {
-        alert("Person ID not found in session storage. Please log in.");
-    }
 });
-
 
 async function fetchPersonData(accountId) {
     try {
@@ -26,27 +18,14 @@ async function fetchPersonData(accountId) {
         sessionStorage.setItem('PersonId', personalData.id);
         displayPersonData(personalData);
         displayEmail(personalData.email);
+        const personId = personalData.id;
+        const addressData = await getAddressData(personId);
+        displayAddressData(addressData);
+
+        await displayProfilePicture(personId);
     } catch (error) {
         console.error("Error fetching person data:", error.message);
         document.getElementById('personDataDisplay').textContent = `Error fetching data: ${error.message}`;
-    }
-}
-
-async function fetchAddressData(personId) {
-    try {
-        const addressData = await getAddressData(personId);
-        displayAddressData(addressData);
-    } catch (error) {
-        console.error("Error fetching address data:", error.message);
-        document.getElementById('addressDataDisplay').textContent = `Error fetching data: ${error.message}`;
-    }
-}
-
-async function fetchProfilePicture(personId) {
-    try {
-        await displayProfilePicture(personId);
-    } catch (error) {
-        console.error("Error fetching profile picture:", error.message);
     }
 }
 
@@ -262,7 +241,7 @@ function deleteAccount() {
     const accountId = sessionStorage.getItem('AccountId');
     const token = getCookie('jwtToken');
 
-    const response = fetch(`https://localhost:5100/api/Account/${accountId}`, {
+    const response = fetch(`https://localhost:5100/api/Account/Delete/${accountId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,

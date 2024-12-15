@@ -11,11 +11,10 @@ namespace HumanRegistrationSystem.DTOs.Request
 
         [Required]
         [StringLength(1000)]
-        public string ContenType { get; set; } = null!;
+        public string ContentType { get; set; } = null!;
 
         [Required]
         [FileSize(5 * 1024 * 1024)]
-        [AllowedExtensions(new string[] { ".jpg", ".jpeg" })]
         public IFormFile Data { get; set; } = null!;
 
         [Required]
