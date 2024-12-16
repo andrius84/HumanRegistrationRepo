@@ -33,34 +33,25 @@ namespace HumanRegistrationSystem.Controllers
         //        return BadRequest("No file uploaded.");
 
         //    var thumbnail = _pictureMapper.Map(pictureRequestDto);
-            
+
         //    _pictureService.UploadPicture(thumbnail);
 
         //    return Ok();           
         //}
 
-        [HttpPost("upload")]
+        [HttpPost("upload/{personId}")]
         [Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] Guid personId)
+        public async Task<IActionResult> UploadImage([FromForm] PictureRequestDto pictureRequestDto)
         {
-            if (file == null || file.Length == 0)
+            if (pictureRequestDto?.Data == null)
             {
                 return BadRequest("No file uploaded.");
             }
 
-            var pictureRequestDto = new PictureRequestDto
-            {
-                FileName = file.FileName,
-                ContentType = file.ContentType,
-                Data = file,
-                PersonId = personId,
-            };
+            var picture = _pictureMapper.Map(pictureRequestDto);
+            _pictureService.UploadPicture(picture);
 
-            var thumbnail = _pictureMapper.Map(pictureRequestDto);
-
-            _pictureService.UploadPicture(thumbnail);
-
-            return Ok(new { Message = "Profile photo uploaded successfully." });
+            return Ok();
         }
 
         [HttpGet("{personId}")]
@@ -78,6 +69,15 @@ namespace HumanRegistrationSystem.Controllers
             //var mimeType = "image/jpeg"; // You can also get the mime type from the file extension
 
             return File(thumbnailDto.Data, thumbnailDto.ContentType);
+        }
+
+        private byte[] ConvertStreamToByteArray(Stream stream)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
     }
 }

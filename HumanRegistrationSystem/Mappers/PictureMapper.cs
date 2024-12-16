@@ -13,23 +13,32 @@ namespace HumanRegistrationSystem.Mappers
     }
     public class PictureMapper : IPictureMapper
     {
-        private readonly PictureProcessor _imageProcessor;
-        public PictureMapper(PictureProcessor imageProcessor)
+        private readonly PictureProcessor _pictureProcessor;
+        public PictureMapper(PictureProcessor pictureProcessor)
         {
-            _imageProcessor = imageProcessor;
+            _pictureProcessor = pictureProcessor;
         }
         public ProfilePicture Map(PictureRequestDto pictureRequestDto)
         {
-            using var memoryStream = new MemoryStream();
-            pictureRequestDto.Data.CopyToAsync(memoryStream);
-            var originalData = memoryStream.ToArray();
-            var thumbnailData = _imageProcessor.CreateThumbnail(originalData, 200, 200);
+            if (pictureRequestDto.Data == null)
+            {
+                throw new ArgumentException("Data stream cannot be null.", nameof(pictureRequestDto.Data));
+            }
+
+            byte[] originalData;
+            using (var memoryStream = new MemoryStream())
+            {
+                pictureRequestDto.Data.CopyToAsync(memoryStream);
+                originalData = memoryStream.ToArray();
+            }
+
+            var thumbnailData = _pictureProcessor.CreateThumbnail(originalData, 200, 200);
 
             return new ProfilePicture
             {
                 FileName = pictureRequestDto.FileName,
-                ContentType = pictureRequestDto.Data.ContentType,
-                Data = thumbnailData,
+                ContentType = pictureRequestDto.ContentType,
+                Data = thumbnailData, 
                 PersonId = pictureRequestDto.PersonId
             };
         }

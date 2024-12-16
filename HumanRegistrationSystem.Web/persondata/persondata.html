@@ -7,6 +7,7 @@
   </head>
   <body>
     <div class="container">
+      <h2>Įveskite asmens duomenis</h2>
           <form id="personalDataForm">
             <input type="text" id="firstName" placeholder="Vardas" required />
             <input type="text" id="lastName" placeholder="Pavardė" required />
@@ -18,7 +19,8 @@
             <input type="text" id="houseNumber" placeholder="Namo numeris" required />
             <input type="text" id="apartmentNumber" placeholder="Buto numeris" />
             <input type="file" id="profilePhoto" accept="image/*" required />
-            <button type="button" id="submitPersonalData">Patvirtinti</button>
+            <button type="button" id="submitPersonalData" >Patvirtinti</button>
+            <button type="button" id="continueButton" style="display:none;" disabled>Tęsti</button>
           </form>
           <div id="message"></div>
   </div>

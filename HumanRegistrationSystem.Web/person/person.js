@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (accountId) {
         fetchPersonData(accountId);
     } else {
-        alert("Account ID not found in session storage. Please log in.");
+        showMessage("Account ID nerastas arba neprisijungta.", 'error');
     }
 });
 
@@ -25,14 +25,13 @@ async function fetchPersonData(accountId) {
         await displayProfilePicture(personId);
     } catch (error) {
         console.error("Error fetching person data:", error.message);
-        document.getElementById('personDataDisplay').textContent = `Error fetching data: ${error.message}`;
     }
 }
 
 async function getPersonData(accountId) {
     const token = getCookie('jwtToken');
     if (!token) {
-        throw new Error("No token found. Please log in.");
+        throw new Error("Tokenas nerastas. Prisijunkite.");
     }
 
     const response = await fetch(`https://localhost:5100/api/Person/PersonByAccountId?accountId=${accountId}`, {
@@ -73,10 +72,9 @@ async function getAddressData(personId) {
 }
 
 async function getProfilePicture(personId) {
-    const token = getCookie('jwtToken'); // Retrieve your JWT token
+    const token = getCookie('jwtToken');
 
     try {
-        // Fetch the profile picture
         const response = await fetch(`https://localhost:5100/api/Picture/${personId}`, {
             method: 'GET',
             headers: {
@@ -89,13 +87,8 @@ async function getProfilePicture(personId) {
             throw new Error(`Failed to fetch profile picture: ${response.status}`);
         }
 
-        // Convert the response Blob into an ArrayBuffer
         const arrayBuffer = await response.arrayBuffer();
-
-        // Convert ArrayBuffer into a Uint8Array (byte array)
         const byteArray = new Uint8Array(arrayBuffer);
-
-        console.log('Byte Array:', byteArray);
 
         return byteArray;
     } catch (error) {
@@ -128,7 +121,7 @@ async function saveField(fieldName) {
     const fieldValue = input.value;
 
     if (!fieldValue) {
-        alert(`Please enter a value for ${fieldName}.`);
+        showMessage(`Please enter a value for ${fieldName}.`);
         return;
     }
 
@@ -144,11 +137,10 @@ async function saveField(fieldName) {
         saveIcon.disabled = true;
         saveIcon.style.opacity = '0.5'; 
 
-        // Optionally, show a message or alert
-        alert(`${fieldName} updated successfully!`);
+        showMessage(`${fieldName} sėkmingai atnaujintas.`, 'success');
     } catch (error) {
         console.error("Error updating field:", error.message);
-        alert(`Error updating ${fieldName}: ${error.message}`);
+        showMessage(`Klaide atnaujinant ${fieldName}. Bandykite dar kartą.`, 'error');
     }
 }
 
@@ -214,13 +206,8 @@ async function displayProfilePicture(personId) {
     const byteArray = await getProfilePicture(personId);
 
     if (byteArray) {
-        // Create a Blob from the byte array
         const blob = new Blob([byteArray], { type: 'image/jpeg' });
-
-        // Create an Object URL
         const imageUrl = URL.createObjectURL(blob);
-
-        // Set it as the `src` for an image element
         const imgElement = document.getElementById('profilePictureContainer');
         imgElement.src = imageUrl;
     }
@@ -237,26 +224,42 @@ function getCookie(cookieName) {
     return null;
 }
 
-function deleteAccount() {
+async function deleteAccount() {
     const accountId = sessionStorage.getItem('AccountId');
     const token = getCookie('jwtToken');
 
-    const response = fetch(`https://localhost:5100/api/Account/Delete/${accountId}`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-    });
+    try {
+        const response = await fetch(`https://localhost:5100/api/Account/Delete/${accountId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
 
-    if (!response.ok) {
-        const error = response.text();
-        throw new Error(error);
+        showMessage("Account deleted successfully.", 'success');
+        sessionStorage.clear();
+        window.location.href = '../index.html';
+
+        if (!response.ok) {
+            showMessage("Klaida ištrinant paskyrą. Bandykite dar kartą.", 'error');
+            throw new Error('Failed to delete account. Please try again.');
+        }
+
+    } catch (error) {
+        console.error("Error deleting account:", error.message);
     }
+}
 
-    sessionStorage.clear();
-    window.location.href = '../index.html';
+function showMessage(message) {
+    const messageContainer = document.getElementById('messageContainer');
+    messageContainer.textContent = message;
+    messageContainer.style.display = 'block'; 
+
+    setTimeout(() => {
+        messageContainer.style.display = 'none';
+    }, 6000); 
 }
 
 function logout() {

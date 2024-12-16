@@ -8,10 +8,17 @@ document.getElementById('submitPersonalData').addEventListener('click', async ()
         email: document.getElementById('email').value,
     };
 
-    await addPersonData(AccountId, personalData);
+    let successCounter = 0;
+
+    try {
+        await addPersonData(AccountId, personalData);
+        successCounter++;
+    } catch (error) {
+        showMessage("Error updating personal data. Please try again.", 'error');
+        return;
+    }
 
     const personId = sessionStorage.getItem('PersonId');
-
     const address = {
         city: document.getElementById('city').value,
         street: document.getElementById('street').value,
@@ -19,15 +26,32 @@ document.getElementById('submitPersonalData').addEventListener('click', async ()
         apartmentNumber: document.getElementById('apartmentNumber').value,
     };
 
-    await addPersonAddress(personId, address);
+    try {
+        await addPersonAddress(personId, address);
+        successCounter++;
+    } catch (error) {
+        showMessage("Error updating address. Please try again.", 'error');
+        return;
+    }
 
     const fileInput = document.getElementById('profilePhoto');
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        await uploadProfilePhoto(personId, file);
+        try {
+            await uploadProfilePhoto(personId, file);
+            successCounter++;
+        } catch (error) {
+            showMessage("Error uploading profile photo. Please try again.", 'error');
+            return;
+        }
+    } else {
+        successCounter++; 
     }
 
-    window.location.href = '../person/person.html';
+    if (successCounter === 3) {
+        showMessage("Information updated successfully!", 'success');
+        showContinueButton();
+    }
 });
 
 async function addPersonData(AccountId, personalData) {
@@ -95,11 +119,13 @@ async function uploadProfilePhoto(personId, file) {
     const token = getCookie('jwtToken');
 
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('personId', personId);
+        formData.append("FileName", file.name);
+        formData.append("ContentType", file.type);
+        formData.append("Data", file); 
+        formData.append("PersonId", personId);
 
     try {
-        const response = await fetch('https://localhost:5100/api/Picture/upload', {
+        const response = await fetch(`https://localhost:5100/api/Picture/upload/${personId}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -131,19 +157,39 @@ function getCookie(cookieName) {
     return null;
 }
 
-function showMessage(message) {
+function showMessage(message, type = 'info', duration = 5000) {
+    const container = document.querySelector('.container');
     let messageDiv = document.getElementById("message");
+
     if (!messageDiv) {
         messageDiv = document.createElement("div");
         messageDiv.id = "message";
         document.body.appendChild(messageDiv);
     }
-    messageDiv.style.display = 'block';
-    messageDiv.style.backgroundColor = 'red';
-    messageDiv.style.color = 'white';
-    messageDiv.style.padding = '5px';
-    messageDiv.style.borderRadius = '5px';
-    messageDiv.style.textAlign = 'center';
-    
+
+    messageDiv.className = ''; 
+    messageDiv.classList.add(`message-${type}`);
     messageDiv.textContent = message;
-  }
+    messageDiv.style.display = 'block';
+
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, duration);
+}
+
+function showContinueButton() {
+    const continueButton = document.getElementById('continueButton');
+
+    continueButton.disabled = false;
+
+    continueButton.addEventListener('click', () => {
+        window.location.href = '../person/person.html';
+    });
+
+    continueButton.style.display = 'block';
+}
+
+document.getElementById('submitPersonalData').addEventListener('click', function(event) {
+    event.preventDefault(); 
+    showContinueButton();
+});

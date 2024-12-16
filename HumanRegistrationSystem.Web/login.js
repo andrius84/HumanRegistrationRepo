@@ -71,26 +71,17 @@ function showMessage(message, type = 'info', duration = 5000) {
     const container = document.querySelector('.container');
     let messageDiv = document.getElementById("message");
 
-    // Create the message div if it doesn't exist
     if (!messageDiv) {
         messageDiv = document.createElement("div");
         messageDiv.id = "message";
         document.body.appendChild(messageDiv);
     }
 
-    // Clear existing type-specific classes
     messageDiv.className = ''; 
-
-    // Add the appropriate class based on the type
     messageDiv.classList.add(`message-${type}`);
-
-    // Set the message content
     messageDiv.textContent = message;
-
-    // Show the message
     messageDiv.style.display = 'block';
 
-    // Auto-dismiss after the specified duration
     setTimeout(() => {
         messageDiv.style.display = 'none';
     }, duration);

@@ -126,16 +126,3 @@ function clearMessage() {
         messageDiv.textContent = "";
     }
 }
-
-function logTokenAndCookies() {
-        // Log JWT token stored in cookie (only in development)
-        const jwtToken = document.cookie.split('; ').find(row => row.startsWith('jwtToken='));
-        if (jwtToken) {
-            console.log("JWT Token from cookie:", jwtToken.split('=')[1]);
-            sessionStorage.setItem("jwtToken", jwtToken.split('=')[1]);
-        } else {
-            console.log("No JWT Token found in cookie.");
-        }
-        // Log cookies
-        console.log("All cookies:", document.cookie);    
-}
