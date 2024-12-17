@@ -5,6 +5,7 @@ using HumanRegistrationSystem.Mappers;
 using HumanRegistrationSystem.DTOs.Request;
 using HumanRegistrationSystem.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace HumanRegistrationSystem.Controllers
 {
@@ -35,7 +36,7 @@ namespace HumanRegistrationSystem.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Invalid person data received.");
-                return BadRequest(ModelState); // Return detailed validation errors
+                return BadRequest(new { message = "Gauti neteisingi duomenys" });
             }
 
             try
@@ -58,7 +59,7 @@ namespace HumanRegistrationSystem.Controllers
         }
 
         /// <summary>
-        ///   
+        /// Get person data   
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns></returns>
@@ -72,7 +73,7 @@ namespace HumanRegistrationSystem.Controllers
 
             if (person == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Asmuo nerastas" });
             }
 
             var personDto = _personMapper.Map(person);
@@ -90,8 +91,15 @@ namespace HumanRegistrationSystem.Controllers
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateFirstName(Guid accountId, [FromBody] string firstName)
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (accountId.ToString() != currentUserId)
+            {
+                return Forbid();
+            }
+
             _logger.LogInformation($"Updating FirstName for AccountId: {accountId}");
             _personService.UpdateFirstName(accountId, firstName);
+            
             return NoContent();
         }
 
@@ -105,17 +113,37 @@ namespace HumanRegistrationSystem.Controllers
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateLastName(Guid accountId, [FromBody] string lastName)
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (accountId.ToString() != currentUserId)
+            {
+                return Forbid();
+            }
+
             _logger.LogInformation($"Updating LastName for AccountId: {accountId}");
             _personService.UpdateLastName(accountId, lastName);
+            
             return NoContent();
         }
 
+        /// <summary>
+        /// Updates the PersonalCode of a person with the given accountId
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="personalCode"></param>
+        /// <returns></returns>
         [HttpPut("{accountId}/personalCode")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdatePersonalCode(Guid accountId, [FromBody] string personalCode)
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (accountId.ToString() != currentUserId)
+            {
+                return Forbid();
+            }
+
             _logger.LogInformation($"Updating Personal Code for AccountId: {accountId}");
             _personService.UpdatePersonalCode(accountId, personalCode);
+            
             return NoContent();
         }
 
@@ -129,8 +157,15 @@ namespace HumanRegistrationSystem.Controllers
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateEmail(Guid accountId, [FromBody] string email)
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (accountId.ToString() != currentUserId)
+            {
+                return Forbid();
+            }
+
             _logger.LogInformation($"Updating Email for AccountId: {accountId}");
             _personService.UpdateEmail(accountId, email);
+            
             return NoContent();
         }
 
@@ -144,8 +179,15 @@ namespace HumanRegistrationSystem.Controllers
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdatePhoneNumber(Guid accountId, [FromBody] string phoneNumber)
         {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (accountId.ToString() != currentUserId)
+            {
+                return Forbid();
+            }
+
             _logger.LogInformation($"Updating PhoneNumber for AccountId: {accountId}");
             _personService.UpdatePhoneNumber(accountId, phoneNumber);
+            
             return NoContent();
         }
     }

@@ -9,7 +9,7 @@ namespace HumanRegistrationSystem.DTOs.Request
         /// Username of the account
         /// </summary>
         [Required]
-        [StringLength(50, MinimumLength = 3)]
+        [UserNameValidator]
         public string UserName { get; set; } = null!;
 
         /// <summary>

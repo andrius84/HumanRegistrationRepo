@@ -25,27 +25,18 @@ namespace HumanRegistrationSystem.Controllers
             _logger = logger;
         }
 
-        //[HttpPost("upload")]
-        //[Authorize(Roles = "User,Admin")]
-        //public async Task<IActionResult> UploadImage([FromBody] PictureRequestDto pictureRequestDto)
-        //{
-        //    if (pictureRequestDto.Data == null)
-        //        return BadRequest("No file uploaded.");
-
-        //    var thumbnail = _pictureMapper.Map(pictureRequestDto);
-
-        //    _pictureService.UploadPicture(thumbnail);
-
-        //    return Ok();           
-        //}
-
+        /// <summary>
+        /// upload image
+        /// </summary>
+        /// <param name="pictureRequestDto"></param>
+        /// <returns></returns>
         [HttpPost("upload/{personId}")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UploadImage([FromForm] PictureRequestDto pictureRequestDto)
         {
             if (pictureRequestDto?.Data == null)
             {
-                return BadRequest("No file uploaded.");
+                return BadRequest(new { Message = "Negautas paveikslėlis" });
             }
 
             var picture = _pictureMapper.Map(pictureRequestDto);
@@ -54,6 +45,11 @@ namespace HumanRegistrationSystem.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// get image by personId
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
         [HttpGet("{personId}")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> GetImageByPersonId(Guid personId)
@@ -61,23 +57,12 @@ namespace HumanRegistrationSystem.Controllers
             var thumbnail = _pictureService.GetPictureByPersonId(personId);
             if (thumbnail == null || thumbnail.Data == null)
             {
-                return NotFound(new { Message = "Profile picture not found for the given person ID." });
+                return NotFound(new { Message = "Nerasta paveikslėlio pagal duotą Id" });
             }
 
             var thumbnailDto = _pictureMapper.Map(thumbnail);
 
-            //var mimeType = "image/jpeg"; // You can also get the mime type from the file extension
-
             return File(thumbnailDto.Data, thumbnailDto.ContentType);
-        }
-
-        private byte[] ConvertStreamToByteArray(Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
         }
     }
 }

@@ -13,11 +13,11 @@ namespace HumanRegistrationSystem.DTOs.Request
         /// </summary>
         [Required]
         [StringLength(50, MinimumLength = 3)]
-        public string? UserName { get; set; }
+        public string UserName { get; set; }
         /// <summary>
         /// Password of the account
         /// </summary>
-        [PasswordValidator]
-        public string? Password { get; set; }
+        [Required]
+        public string Password { get; set; }
     }
 }

@@ -14,6 +14,8 @@ namespace HumanRegistrationSystem.Entities
 
         // Foreign key
         public Guid AccountId { get; set; } = Guid.Empty;
+
+        // Navigation property
         public Account? Account { get; set; } = null!;
         public Address? Address { get; set; } = null!;
         public ProfilePicture? ProfilePicture { get; set; } = null!;

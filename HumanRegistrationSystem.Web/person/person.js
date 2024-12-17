@@ -121,7 +121,7 @@ async function saveField(fieldName) {
     const fieldValue = input.value;
 
     if (!fieldValue) {
-        showMessage(`Please enter a value for ${fieldName}.`);
+        showMessage(`Įveskite reikšmę ${fieldName}.`, 'warning');
         return;
     }
 
@@ -140,7 +140,7 @@ async function saveField(fieldName) {
         showMessage(`${fieldName} sėkmingai atnaujintas.`, 'success');
     } catch (error) {
         console.error("Error updating field:", error.message);
-        showMessage(`Klaide atnaujinant ${fieldName}. Bandykite dar kartą.`, 'error');
+        showMessage(`Klaida atnaujinant ${fieldName}. Bandykite dar kartą.`, 'error');
     }
 }
 
@@ -238,13 +238,22 @@ async function deleteAccount() {
             credentials: 'include',
         });
 
-        showMessage("Account deleted successfully.", 'success');
-        sessionStorage.clear();
-        window.location.href = '../index.html';
+        if (response.status === 403) {
+            showMessage("Neturite teisių ištrinti paskyrą", 'warning');
+            return;
+        }
 
         if (!response.ok) {
             showMessage("Klaida ištrinant paskyrą. Bandykite dar kartą.", 'error');
-            throw new Error('Failed to delete account. Please try again.');
+            return;
+        }
+
+        if (response.ok)
+        {
+            showMessage("Vartotojas sėkmingai ištrintas", 'success');
+            setTimeout(() => {
+                logout();
+            }, 4000);
         }
 
     } catch (error) {
@@ -252,19 +261,16 @@ async function deleteAccount() {
     }
 }
 
-// function showMessage(message) {
-//     const messageContainer = document.getElementById('messageContainer');
-//     messageContainer.textContent = message;
-//     messageContainer.style.display = 'block'; 
-
-//     setTimeout(() => {
-//         messageContainer.style.display = 'none';
-//     }, 6000); 
-// }
-
-function showMessage(message, type = 'info', duration = 7000) {
+function showMessage(message, type = 'error', duration = 5000) {
     const container = document.querySelector('.container');
     let messageDiv = document.getElementById("message");
+
+    if (!messageDiv) {
+        messageDiv = document.createElement("div");
+        messageDiv.id = "message";
+        document.body.appendChild(messageDiv);
+    }
+
     messageDiv.className = ''; 
     messageDiv.classList.add(`message-${type}`);
     messageDiv.textContent = message;

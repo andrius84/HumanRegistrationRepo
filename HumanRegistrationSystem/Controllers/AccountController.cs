@@ -2,10 +2,7 @@
 using HumanRegistrationSystem.Services;
 using HumanRegistrationSystem.Mappers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
-using HumanRegistrationSystem.Models;
 
 namespace HumanRegistrationSystem.Controllers
 {
@@ -44,7 +41,7 @@ namespace HumanRegistrationSystem.Controllers
             if (_accountService.GetAccount(account.UserName) != null)
             {
                 _logger.LogWarning($"User {req.UserName} already exists");
-                return BadRequest("User already exists");
+                return BadRequest(new { message = "Toks vartotojas jau egzistuoja" });
             }
 
             var newUser = _accountService.CreateAccount(account);
@@ -63,27 +60,22 @@ namespace HumanRegistrationSystem.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto req)
         {
-            if (req == null || string.IsNullOrWhiteSpace(req.UserName) || string.IsNullOrWhiteSpace(req.Password))
-            {
-                _logger.LogWarning("Invalid login request");
-                return BadRequest(new ApiErrorResponse { Message = "Įveskite vartotoją ir slaptažodį" });
-            }
-
             _logger.LogInformation($"Login attempt for user: {req.UserName}");
 
             var account = _accountService.GetAccount(req.UserName!);
             if (account == null)
             {
                 _logger.LogWarning($"User {req.UserName} not found");
-                return BadRequest(new ApiErrorResponse { Message = "Neteisingas vartotojas arba slaptažodis" });
+                return BadRequest(new { message = "Vartotojas nerastas" });
             }
 
             var isPasswordValid = _accountService.VerifyPasswordHash(req.Password, account.PasswordHash, account.PasswordSalt);
             if (!isPasswordValid)
             {
                 _logger.LogWarning($"Invalid password for user: {req.UserName}");
-                return BadRequest(new ApiErrorResponse { Message = "Invalid username or password" });
+                return BadRequest(new { message = "Neteisingas slaptažodis" });
             }
+
 
             _logger.LogInformation($"User {req.UserName} successfully logged in");
 
@@ -107,7 +99,7 @@ namespace HumanRegistrationSystem.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error generating JWT for user: {UserName}", req.UserName);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ApiErrorResponse { Message = "An error occurred while processing your request", Details = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -128,7 +120,7 @@ namespace HumanRegistrationSystem.Controllers
             if (account == null)
             {
                 _logger.LogWarning($"Account with ID: {accountId} not found");
-                return NotFound("Account not found");
+                return BadRequest(new { message = "Vartotojas nerastas" });
             }
 
             _accountService.DeleteAccount(account.Id);

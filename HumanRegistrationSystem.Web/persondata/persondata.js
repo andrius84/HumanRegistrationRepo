@@ -10,6 +10,10 @@ document.getElementById('submitPersonalData').addEventListener('click', async ()
 
     let successCounter = 0;
 
+    if (!validatePersonalData(personalData)) {
+        return;
+    }
+
     try {
         await addPersonData(AccountId, personalData);
         successCounter++;
@@ -25,6 +29,10 @@ document.getElementById('submitPersonalData').addEventListener('click', async ()
         houseNumber: document.getElementById('houseNumber').value,
         apartmentNumber: document.getElementById('apartmentNumber').value,
     };
+
+    if (!validateAddress(address)) {
+        return;
+    }
 
     try {
         await addPersonAddress(personId, address);
@@ -44,12 +52,10 @@ document.getElementById('submitPersonalData').addEventListener('click', async ()
             showMessage("Error uploading profile photo. Please try again.", 'error');
             return;
         }
-    } else {
-        successCounter++; 
     }
 
     if (successCounter === 3) {
-        showMessage("Information updated successfully!", 'success');
+        showMessage("Asmens informacija sėkmingai įrašyta", 'success');
         showContinueButton();
     }
 });
@@ -78,6 +84,8 @@ async function addPersonData(AccountId, personalData) {
             const error = await response.text();
             throw new Error(`Failed to add personal data: ${error}`);
         }
+
+        console.log("Personal data added successfully!");
 
         const result = await response.json();
         sessionStorage.setItem('PersonId', result.personId);
@@ -193,3 +201,53 @@ document.getElementById('submitPersonalData').addEventListener('click', function
     event.preventDefault(); 
     showContinueButton();
 });
+
+
+function validatePersonalData(personalData) {
+    const { firstName, lastName, phoneNumber, email, personalCode } = personalData;
+
+    if (!firstName.trim()) {
+        showMessage('Vardo laukas negali būti tuščias.', 'warning');
+        return false;
+    }
+    if (!lastName.trim()) {
+        showMessage('Pavardės laukas negali būti tuščias.', 'warning');
+        return false;
+    }
+    if (!personalCode.match(/^\d{11}$/)) {
+        showMessage('Asmens kodas turi buti sudarytas is 11 skaitmenų.', 'warning');
+        return false;
+    }
+    if (!phoneNumber.match(/^\d+$/)) {
+        showMessage('Telefono numerį turi sudaryti skaičiai.', 'warning');
+        return false;
+    }
+    if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+        showMessage('Neteisingas el. pašto adresas.', 'warning');
+        return false;
+    }
+
+    return true;
+}
+
+function validateAddress(address) {
+    const { city, street, houseNumber, apartmentNumber } = address;
+
+    if (!city.trim()) {
+        showMessage('Įveskite miesto pavadinimą.', 'warning');
+        return false;
+    }
+
+    if (!street.trim()) {
+        showMessage('Įveskite gatvės pavadinimą.', 'warning');
+        return false;
+    }
+
+    const houseNumberRegex = /^[a-zA-Z0-9\s]+$/;
+    if (!houseNumberRegex.test(houseNumber)) {
+        showMessage('Namų numeris turi būti sudarytas iš skaičių.', 'warning');
+        return false;
+    }
+
+    return true;
+}

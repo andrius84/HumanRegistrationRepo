@@ -23,7 +23,11 @@ namespace HumanRegistrationSystem.Controllers
             _addressService = addressService;
         }
 
-        // POST: api/Address
+        /// <summary>
+        /// adress creation
+        /// </summary>
+        /// <param name="addressRequestDto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Post([FromBody] AddressRequestDto addressRequestDto)
@@ -37,7 +41,11 @@ namespace HumanRegistrationSystem.Controllers
             return Created(nameof(Post), new { id = address.Id });
         }
 
-        // GET: api/AddressByPersonId
+        /// <summary>
+        /// get Address by PersonId
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <returns></returns>
         [HttpGet("AddressByPersonId")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Get([FromQuery] Guid personId)
@@ -56,6 +64,12 @@ namespace HumanRegistrationSystem.Controllers
             return Ok(addressDto);
         }
 
+        /// <summary>
+        /// update city
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="city"></param>
+        /// <returns></returns>
         [HttpPut("{personId}/City")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateCity(Guid personId, [FromBody] string city)
@@ -65,6 +79,12 @@ namespace HumanRegistrationSystem.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// update street
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="street"></param>
+        /// <returns></returns>
         [HttpPut("{personId}/Street")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateStreet(Guid personId, [FromBody] string street)
@@ -74,6 +94,12 @@ namespace HumanRegistrationSystem.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// update house number
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="houseNumber"></param>
+        /// <returns></returns>
         [HttpPut("{personId}/HouseNumber")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateHouseNumber(Guid personId, [FromBody] string houseNumber)
@@ -83,6 +109,12 @@ namespace HumanRegistrationSystem.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// update apartment number
+        /// </summary>
+        /// <param name="personId"></param>
+        /// <param name="apartmentNumber"></param>
+        /// <returns></returns>
         [HttpPut("{personId}/ApartmentNumber")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateApartmentNumber(Guid personId, [FromBody] string apartmentNumber)

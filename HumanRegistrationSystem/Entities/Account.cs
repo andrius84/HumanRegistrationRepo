@@ -9,6 +9,7 @@ namespace HumanRegistrationSystem.Entities
         public byte[] PasswordHash { get; set; } = null!;
         public byte[] PasswordSalt { get; set; } = null!;
 
+        // Navigation property
         public Person? Person { get; set; }
         public Role? Role { get; set; }
 

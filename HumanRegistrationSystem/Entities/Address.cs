@@ -10,7 +10,10 @@ namespace HumanRegistrationSystem.Entities
         public string HouseNumber { get; set; } = null!;
         public string? ApartmentNumber { get; set; }
 
+        // Foreign key
         public Guid PersonId { get; set; }
+
+        // Navigation property
         public Person Person { get; set; } = null!;
     }
 }
