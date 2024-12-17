@@ -252,14 +252,27 @@ async function deleteAccount() {
     }
 }
 
-function showMessage(message) {
-    const messageContainer = document.getElementById('messageContainer');
-    messageContainer.textContent = message;
-    messageContainer.style.display = 'block'; 
+// function showMessage(message) {
+//     const messageContainer = document.getElementById('messageContainer');
+//     messageContainer.textContent = message;
+//     messageContainer.style.display = 'block'; 
+
+//     setTimeout(() => {
+//         messageContainer.style.display = 'none';
+//     }, 6000); 
+// }
+
+function showMessage(message, type = 'info', duration = 7000) {
+    const container = document.querySelector('.container');
+    let messageDiv = document.getElementById("message");
+    messageDiv.className = ''; 
+    messageDiv.classList.add(`message-${type}`);
+    messageDiv.textContent = message;
+    messageDiv.style.display = 'block';
 
     setTimeout(() => {
-        messageContainer.style.display = 'none';
-    }, 6000); 
+        messageDiv.style.display = 'none';
+    }, duration);
 }
 
 function logout() {
