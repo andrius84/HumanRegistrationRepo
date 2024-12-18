@@ -32,6 +32,9 @@ namespace HumanRegistrationSystem.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("SignUp")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SignUp(AccountRequestDto req)
         {
             _logger.LogInformation($"Creating account for {req.UserName}");
@@ -111,7 +114,7 @@ namespace HumanRegistrationSystem.Controllers
         [HttpDelete("Delete/{accountId}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteAccount(Guid accountId)
         {
             _logger.LogInformation($"Deleting account with ID: {accountId}");

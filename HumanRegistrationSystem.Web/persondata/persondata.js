@@ -218,8 +218,8 @@ function validatePersonalData(personalData) {
         showMessage('Asmens kodas turi buti sudarytas is 11 skaitmenų.', 'warning');
         return false;
     }
-    if (!phoneNumber.match(/^\d+$/)) {
-        showMessage('Telefono numerį turi sudaryti skaičiai.', 'warning');
+    if (!phoneNumber.match(/^\d{9,15}$/)) {
+        showMessage('Telefono numerį turi sudaryti 9-15 skaičių.', 'warning');
         return false;
     }
     if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {

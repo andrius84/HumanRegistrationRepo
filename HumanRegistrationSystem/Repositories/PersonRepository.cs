@@ -20,7 +20,6 @@ namespace HumanRegistrationSystem.Repositories
         {
             _context = applicationDbContext;
         }
-        public PersonRepository() { }
 
         public Guid Add(Person person)
         {

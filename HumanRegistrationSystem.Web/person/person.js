@@ -120,8 +120,7 @@ async function saveField(fieldName) {
     const saveIcon = input.nextElementSibling.nextElementSibling;
     const fieldValue = input.value;
 
-    if (!fieldValue) {
-        showMessage(`Įveskite reikšmę ${fieldName}.`, 'warning');
+    if (!validatePersonalData(fieldName, fieldValue)) {
         return;
     }
 
@@ -145,6 +144,7 @@ async function saveField(fieldName) {
 }
 
 async function updatePersonField(fieldKey, fieldValue) {
+
     const token = getCookie('jwtToken');
     const accountId = sessionStorage.getItem('AccountId');
     const response = await fetch(`https://localhost:5100/api/Person/${accountId}/${fieldKey}`, {
@@ -164,6 +164,7 @@ async function updatePersonField(fieldKey, fieldValue) {
 }
 
 async function updateAddressField(fieldKey, fieldValue) {
+
     const token = getCookie('jwtToken');
     const personId = sessionStorage.getItem('PersonId');
 
@@ -279,6 +280,32 @@ function showMessage(message, type = 'error', duration = 5000) {
     setTimeout(() => {
         messageDiv.style.display = 'none';
     }, duration);
+}
+
+function validatePersonalData(fieldKey, fieldValue) {
+
+    if (fieldKey == 'firstName' && !fieldValue.trim()) {
+        showMessage('Vardo laukas negali būti tuščias.', 'warning');
+        return false;
+    }
+    if (fieldKey == 'lastName' && !fieldValue.trim()) {
+        showMessage('Pavardės laukas negali būti tuščias.', 'warning');
+        return false;
+    }
+    if (fieldKey == 'personalCode' && !fieldValue.replace(/\s+/g, '').trim()) {
+        showMessage('Asmens kodo laukas negali būti tuščias.', 'warning');
+        return false;
+    }
+    if (fieldKey == 'email' && !fieldValue.replace(/\s+/g, '').trim()) {
+        showMessage('El. pašto laukas negali būti tuščias.', 'warning');
+        return
+    }
+    if (fieldKey == 'phoneNumber' && !fieldValue.replace(/\s+/g, '').trim()) {
+        showMessage('Telefono numerio laukas negali būti tuščias.', 'warning');
+        return false;
+    }
+    
+    return true;
 }
 
 function logout() {

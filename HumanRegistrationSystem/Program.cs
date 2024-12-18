@@ -18,7 +18,7 @@ namespace HumanRegistrationSystem
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddSingleton<PictureProcessor>();
+            builder.Services.AddTransient<PictureProcessor>();
 
             builder.Services.AddTransient<IJwtService, JwtService>();
             
